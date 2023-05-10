@@ -1,0 +1,9 @@
+addr: 0.0.0.0:8080
+
+ipip:
+  dataset: "file"
+  path: "/data/ipip.db"
+
+ip2location:
+  dataset: "file"
+  path: "/data/ip2location.ipdb"
