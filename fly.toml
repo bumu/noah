@@ -1,25 +1,14 @@
-# fly.toml app configuration file generated for icy-cherry-3968 on 2023-05-10T15:20:34+08:00
+# fly.toml app configuration file generated for bumu on 2023-05-20T01:00:34+08:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = ""
+app = "bumu"
 primary_region = "sin"
-
-[env]
-  PORT = "8080"
-  HOME = "/app"
-
-[metrics]
-  port = 8080 # default for most prometheus clients
-  path = "/metrics" # default for most prometheus clients
-
-[mounts]
-  source="myapp_data"
-  destination="/data"
 
 [http_service]
   internal_port = 8080
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true
+  min_machines_running = 0

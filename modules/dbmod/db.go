@@ -9,7 +9,7 @@ import (
 )
 
 func NewConn() (*gorm.DB, error) {
-	dsn, err := dburl.Parse(configkit.GlobalConfig.Database)
+	dsn, err := dburl.Parse(configkit.GlobalConfig.DatabaseURL)
 	if err != nil {
 		return nil, err
 	}

@@ -1,0 +1,6 @@
+addr: 0.0.0.0:8080
+
+redis_url:  redis://root:123456@127.0.01:6379
+
+# Database
+database_url: mysql://root:123456@127.0.0.1:3306/db_apigw?charset=utf8mb4&parseTime=True

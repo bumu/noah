@@ -7,8 +7,9 @@ import (
 )
 
 type Config struct {
-	Addr     string `mapstructure:"addr" default:":8080"`
-	Database string `mapstructure:"database"`
+	Addr        string `mapstructure:"addr" default:":8080"`
+	RedisURL    string `mapstructure:"redis_url"`
+	DatabaseURL string `mapstructure:"database_url"`
 }
 
 var GlobalConfig Config
@@ -16,6 +17,7 @@ var GlobalConfig Config
 func Init() {
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
+	viper.AddConfigPath("/app/")
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {

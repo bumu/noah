@@ -1,0 +1,12 @@
+APIGW Service
+
+@hostname = http://127.0.0.1:8080
+
+### Case 1: APIGW Service with no auth
+
+GET {{hostname}}
+
+
+### Case 2: test metrics
+
+GET {{hostname}}/metrics

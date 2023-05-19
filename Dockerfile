@@ -5,17 +5,17 @@ WORKDIR /build
 ADD ./ /build
 
 RUN cd /build/ && \
-	CGO_ENABLED=0 GOOS=linux go build -ldflags '-w -s' -o ipdb
+	CGO_ENABLED=0 GOOS=linux go build -buildvcs=false -ldflags '-w -s' -o apigw
 
 
 FROM airdb/base:latest
 
-WORKDIR /app/ipdb
+WORKDIR /app/
 
-COPY --from=builder /build/ipdb /app/ipdb/
-COPY --from=builder /build/config.yaml /app/ipdb/
+COPY --from=builder /build/apigw /app/
+COPY --from=builder /build/config.yaml /app/
 
 EXPOSE 8080
 
 #ENTRYPOINT ["sleep", "3600"]
-ENTRYPOINT ["/app/ipdb/ipdb"]
+ENTRYPOINT ["/app/apigw"]

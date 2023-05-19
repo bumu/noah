@@ -1,4 +1,4 @@
-SERVICE := dean
+SERVICE := bumu
 
 all: help
 
@@ -17,4 +17,4 @@ conf secret: ## Upddate config
 	flyctl secrets import -a ${SERVICE} < env.fly
 
 bash: ## Enter bash
-	flyctl ssh console -a  ${SERVICE}
+	flyctl ssh console -a ${SERVICE} -C /bin/bash

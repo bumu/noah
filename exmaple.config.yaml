@@ -1,4 +1,0 @@
-addr: 0.0.0.0:8080
-
-# Database
-database: mysql://root:123456@127.0.0.1:3306/db_apigw?charset=utf8mb4&parseTime=True

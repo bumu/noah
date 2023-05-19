@@ -1,15 +1,14 @@
 version: '3.3'
 
 services:
-  ipdb:
-    container_name: ipdb
+  apigw:
+    container_name: apigw
     restart: always
-    image: 'airdb/ipdb:latest'
+    image: 'airdb/apigw:latest'
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "8080:8080/tcp"
     volumes:
-      - ./config.yaml:/app/ipdb/config.yaml:ro
-      - ./data/:/app/ipdb/data/:ro
+      - ./config.yaml:/app/config.yaml:ro
