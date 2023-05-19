@@ -30,5 +30,5 @@ func Init() {
 		log.Fatalf("unable to decode into struct, %v", err)
 	}
 
-	log.Println("xx", GlobalConfig.Database)
+	log.Println("read config from file: ", GlobalConfig.DatabaseURL)
 }

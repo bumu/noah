@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -34,8 +33,10 @@ func Register(deps registerDeps) {
 			// log := deps.Logger.With("uri", r.URL.String())
 
 			log.Println("ping")
-			fmt.Fprintf(w, "pong\n")
+			w.Write([]byte("pong\n"))
 		})
+		r.HandleFunc("/user", deps.HandleUser)
 		r.HandleFunc("/openai/*", deps.HandleOpenai)
+
 	})
 }
