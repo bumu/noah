@@ -1,9 +1,4 @@
 addr: 0.0.0.0:8080
 
-ipip:
-  dataset: "file"
-  path: "/data/ipip.db"
-
-ip2location:
-  dataset: "file"
-  path: "/data/ip2location.ipdb"
+# Database
+database: mysql://root:123456@127.0.0.1:3306/db_apigw?charset=utf8mb4&parseTime=True
