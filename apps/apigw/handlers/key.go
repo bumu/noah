@@ -10,7 +10,25 @@ import (
 	"github.com/go-chi/render"
 )
 
-func (deps registerDeps) GenerateNewKeys(w http.ResponseWriter, r *http.Request) {
+// Refer: https://google.aip.dev/131
+func (desp registerDeps) GetKey(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("get key"))
+}
+
+func (deps registerDeps) ListKeys(w http.ResponseWriter, r *http.Request) {
+	offset := 0
+	limit := 10
+
+	keys, err := deps.KeyRepo.List(r.Context(), limit, offset)
+	if err != nil {
+		w.Write([]byte("get key error\n"))
+	}
+
+	//resp := userv1.ListKeysResponse{Keys: make([]*userv1.UserKey, len(keys))}
+	render.JSON(w, r, &keys)
+}
+
+func (deps registerDeps) CreateKeys(w http.ResponseWriter, r *http.Request) {
 	skey := "sk-" + randStr(32)
 
 	entity := schema.Key{
@@ -27,17 +45,10 @@ func (deps registerDeps) GenerateNewKeys(w http.ResponseWriter, r *http.Request)
 	render.JSON(w, r, &resp)
 }
 
-func (deps registerDeps) ListKeys(w http.ResponseWriter, r *http.Request) {
-	offset := 0
-	limit := 10
+func (deps registerDeps) UpdateKey(w http.ResponseWriter, r *http.Request) {
+}
 
-	keys, err := deps.KeyRepo.List(r.Context(), limit, offset)
-	if err != nil {
-		w.Write([]byte("get key error\n"))
-	}
-
-	//resp := userv1.ListKeysResponse{Keys: make([]*userv1.UserKey, len(keys))}
-	render.JSON(w, r, &keys)
+func (deps registerDeps) DeleteKey(w http.ResponseWriter, r *http.Request) {
 }
 
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")

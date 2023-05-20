@@ -2,25 +2,34 @@ package handlers
 
 import (
 	"net/http"
-	"strings"
-
-	userv1 "apigw/gen/go/user/v1"
 
 	"github.com/go-chi/render"
 )
 
-func (deps registerDeps) HandleUser(w http.ResponseWriter, r *http.Request) {
-	skey := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
-	token := skey
+func (deps registerDeps) GetUser(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("get user"))
+}
 
-	key, err := deps.KeyRepo.First(r.Context(), token)
+func (deps registerDeps) ListUser(w http.ResponseWriter, r *http.Request) {
+	offset := 0
+	limit := 10
 
-	if err == nil && key != nil {
-		key.Token = "111"
+	users, err := deps.UserRepo.List(r.Context(), limit, offset)
+	if err != nil {
+		w.Write([]byte("get key error\n"))
 	}
 
-	resp := userv1.UserKeyResponse{}
-	resp.Status = "1111"
+	render.JSON(w, r, &users)
+}
 
-	render.JSON(w, r, &resp)
+func (desp registerDeps) CreateUser(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("create user"))
+}
+
+func (deps registerDeps) UpdateUser(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("update user"))
+}
+
+func (deps registerDeps) DeleteUser(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("delete user"))
 }

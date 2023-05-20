@@ -19,3 +19,9 @@ func NewUserRepo(conn *gorm.DB) *UserRepo {
 func (r UserRepo) Create(ctx context.Context, entity *schema.User) error {
 	return r.Conn.Create(entity).Error
 }
+
+func (r UserRepo) List(ctx context.Context, limit, offset int) ([]*schema.User, error) {
+	dst := []*schema.User{}
+	err := r.Conn.Debug().Limit(limit).Offset(offset).Find(&dst).Error
+	return dst, err
+}

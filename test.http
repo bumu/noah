@@ -10,3 +10,11 @@ GET {{hostname}}
 ### Case 2: test metrics
 
 GET {{hostname}}/metrics
+
+
+### Case 3: get user keys.
+
+GET {{hostname}}/v1/user/key/list
+
+### Case 4: create user keys
+POST {{hostname}}/v1/user/key/create

@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
 
 	"apigw/apps/apigw/data/repos"
@@ -16,7 +15,8 @@ type registerDeps struct {
 
 	Mux *chi.Mux
 	//Logger  *slog.Logger
-	KeyRepo *repos.KeyRepo
+	KeyRepo  *repos.KeyRepo
+	UserRepo *repos.UserRepo
 	// Checker *sensitivemod.Checker
 }
 
@@ -26,19 +26,28 @@ func Register(deps registerDeps) {
 			w.Write([]byte("welcome to apigw service\n"))
 		})
 		r.Handle("/metrics", promhttp.Handler())
-	})
-
-	deps.Mux.Route("/v1", func(r chi.Router) {
-		r.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
-			// log := deps.Logger.With("uri", r.URL.String())
-
-			log.Println("ping")
+		r.HandleFunc("/*", func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("pong\n"))
 		})
-		r.HandleFunc("/user", deps.HandleUser)
-		r.Get("/user/key/list", deps.ListKeys)
-		r.Post("/user/key/new", deps.GenerateNewKeys)
-		r.HandleFunc("/openai/*", deps.HandleOpenai)
+	})
 
+	// Refer: https://google.aip.dev/158
+	// method order: get, list, create, update, delete.
+	deps.Mux.Route("/v1", func(r chi.Router) {
+		// User api management
+		r.Get("/user", deps.GetUser)
+		r.Get("/user/list", deps.ListUser)
+		r.Post("/user/create", deps.CreateUser)
+		r.Post("/user/update", deps.UpdateUser)
+		r.Post("/user/delete", deps.DeleteUser)
+
+		// Key api management
+		r.Get("/user/key", deps.GetKey)
+		r.Get("/user/key/list", deps.ListKeys)
+		r.Post("/user/key/create", deps.CreateKeys)
+		r.Post("/user/key/update", deps.UpdateKey)
+		r.Post("/user/key/delete", deps.DeleteKey)
+
+		r.HandleFunc("/openai/*", deps.HandleOpenai)
 	})
 }
