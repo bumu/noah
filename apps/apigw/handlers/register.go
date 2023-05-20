@@ -36,6 +36,8 @@ func Register(deps registerDeps) {
 			w.Write([]byte("pong\n"))
 		})
 		r.HandleFunc("/user", deps.HandleUser)
+		r.Get("/user/key/list", deps.ListKeys)
+		r.Post("/user/key/new", deps.GenerateNewKeys)
 		r.HandleFunc("/openai/*", deps.HandleOpenai)
 
 	})

@@ -3,7 +3,8 @@ package repos
 import (
 	"context"
 
-	"github.com/airdb/chat-gateway/apps/chatgw/data/schema"
+	"apigw/apps/apigw/data/schema"
+
 	"gorm.io/gorm"
 )
 

@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
 	"strings"
 
@@ -11,7 +10,6 @@ import (
 )
 
 func (deps registerDeps) HandleUser(w http.ResponseWriter, r *http.Request) {
-	log.Println("xxx")
 	skey := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
 	token := skey
 
