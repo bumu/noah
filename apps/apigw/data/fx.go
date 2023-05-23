@@ -11,6 +11,8 @@ func FxOptions() fx.Option {
 		fx.Provide(
 			repos.NewUserRepo,
 			repos.NewKeyRepo,
+			repos.NewIpdbRepo,
+			repos.NewIpdbV6Repo,
 		),
 	)
 }
