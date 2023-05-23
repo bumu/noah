@@ -39,6 +39,20 @@ message SensitiveRequest {
   map<string, google.protobuf.Any> payload = 2;
 }
 
+/* Example for response.
+{
+    "code": "0",
+    "msg": "check success",
+    "remain": "29999",
+    "return_str": "他在传播**内容",
+    "word_list": [{
+        "keyword": "艳情",
+        "category": "色情",
+        "position": "4-5",
+        "level": "高"
+    }]
+}
+*/
 message SensitiveResponse {
   google.protobuf.Any data = 4;
   string code = 5;
