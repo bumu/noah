@@ -19,7 +19,7 @@ service SensitiveService {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {description: "Senstive Words Service"};
 
   // Sensitive
-  rpc SensitiveAPI(SenseRequest) returns (SenseResponse) {
+  rpc SensitiveAPI(SensitiveRequest) returns (SensitiveResponse) {
     option (google.api.http) = {
       post: "/v1/sensitive/{name=*}"
       body: "payload"
@@ -29,7 +29,7 @@ service SensitiveService {
   }
 }
 
-message SenseRequest {
+message SensitiveRequest {
   // The uri of the openai.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
@@ -39,6 +39,18 @@ message SenseRequest {
   map<string, google.protobuf.Any> payload = 2;
 }
 
-message SenseResponse {
+message SensitiveResponse {
   google.protobuf.Any data = 4;
+  string code = 5;
+  string msg = 6;
+  string remain = 7;
+  string return_str = 8;
+  repeated SensitiveWord word_list = 9;
+}
+
+message SensitiveWord {
+  string keyword = 1;
+  string category = 2;
+  string position = 3;
+  string level = 4;
 }
