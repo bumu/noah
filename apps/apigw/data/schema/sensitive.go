@@ -5,9 +5,9 @@ import "gorm.io/gorm"
 type Sensitive struct {
 	gorm.Model
 
-	Categey     string
+	Category    string
 	CountryCode string // country code 3 letters
-	Content     string
+	Content     string `gorm:"unique:not null"`
 	Remark      string
 }
 

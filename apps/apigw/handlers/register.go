@@ -15,8 +15,9 @@ type registerDeps struct {
 
 	Mux *chi.Mux
 	//Logger  *slog.Logger
-	KeyRepo  *repos.KeyRepo
-	UserRepo *repos.UserRepo
+	KeyRepo       *repos.KeyRepo
+	UserRepo      *repos.UserRepo
+	SensitiveRepo *repos.SensitiveRepo
 	// Checker *sensitivemod.Checker
 }
 
@@ -47,6 +48,12 @@ func Register(deps registerDeps) {
 		r.Post("/user/key/create", deps.CreateKeys)
 		r.Post("/user/key/update", deps.UpdateKey)
 		r.Post("/user/key/delete", deps.DeleteKey)
+
+		r.Get("/sensitive", deps.GetSensitive)
+		r.Get("/sensitive/list", deps.ListSensitive)
+		r.Post("/sensitive/create", deps.CreateSensitive)
+		r.Post("/sensitive/update", deps.UpdateSensitive)
+		r.Post("/sensitive/delete", deps.DeleteSensitive)
 
 		r.HandleFunc("/openai/*", deps.HandleOpenai)
 	})

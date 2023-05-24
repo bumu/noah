@@ -37,6 +37,9 @@ message SensitiveRequest {
   ];
 
   map<string, google.protobuf.Any> payload = 2;
+  string category = 3;
+  string country_code = 4;
+  string content = 5;
 }
 
 /* Example for response.

@@ -13,6 +13,7 @@ func FxOptions() fx.Option {
 			repos.NewKeyRepo,
 			repos.NewIpdbRepo,
 			repos.NewIpdbV6Repo,
+			repos.NewSensitiveRepo,
 		),
 	)
 }

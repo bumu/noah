@@ -18,3 +18,22 @@ GET {{hostname}}/v1/user/key/list
 
 ### Case 4: create user keys
 POST {{hostname}}/v1/user/key/create
+
+
+
+### Case 4: sensitive
+
+GET {{hostname}}/v1/sensitive
+
+###
+GET {{hostname}}/v1/sensitive/list
+
+
+### Case 4: create user keys
+POST {{hostname}}/v1/sensitive/create
+
+{
+    "category": "test",
+    "country_code": "CHN",
+    "content": "test content"
+}

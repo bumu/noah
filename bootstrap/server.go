@@ -3,6 +3,7 @@ package bootstrap
 import (
 	"apigw/pkg/configkit"
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/middleware"
@@ -59,6 +60,8 @@ func NewMux() *chi.Mux {
 
 // Run the server
 func (s *Server) Start() error {
+	fmt.Println("server start ", s.server.Addr)
+
 	return s.server.ListenAndServe()
 }
 
