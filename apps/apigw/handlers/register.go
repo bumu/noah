@@ -37,6 +37,7 @@ func Register(deps registerDeps) {
 	deps.Mux.Route("/v1", func(r chi.Router) {
 		// User api management
 		r.Get("/user", deps.GetUser)
+		r.Get("/user/keys", deps.GetHostKey)
 		r.Get("/user/list", deps.ListUser)
 		r.Post("/user/create", deps.CreateUser)
 		r.Post("/user/update", deps.UpdateUser)
