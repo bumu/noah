@@ -31,10 +31,13 @@ local:
 	go run main.go
 
 deploy: ## Deploy
-	flyctl deploy -a ${SERVICE} --no-cache
+	fly deploy -a ${SERVICE} --no-cache
 
 conf secret: ## Upddate config
-	flyctl secrets import -a ${SERVICE} < env.fly
+	fly secrets import -a ${SERVICE} < fly.env
 
 bash: ## Enter bash
-	flyctl ssh console -a ${SERVICE} -C /bin/bash
+	fly ssh console -a ${SERVICE}
+
+db sql pg:
+	fly postgres connect -a ${SERVICE}-db

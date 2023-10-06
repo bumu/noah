@@ -15,9 +15,10 @@ type registerDeps struct {
 
 	Mux *chi.Mux
 	//Logger  *slog.Logger
-	KeyRepo       *repos.KeyRepo
-	UserRepo      *repos.UserRepo
-	SensitiveRepo *repos.SensitiveRepo
+	KeyRepo            *repos.KeyRepo
+	UserRepo           *repos.UserRepo
+	SensitiveRepo      *repos.SensitiveRepo
+	IpdbDataCenterRepo *repos.IpdbDataCenterRepo
 	// Checker *sensitivemod.Checker
 }
 
@@ -57,5 +58,10 @@ func Register(deps registerDeps) {
 		r.Post("/sensitive/delete", deps.DeleteSensitive)
 
 		r.HandleFunc("/openai/*", deps.HandleOpenai)
+
+		r.HandleFunc("/ipdb/datacenter", deps.GetIpdbDataCenter)
+		r.HandleFunc("/ipdb/datacenter/list", deps.ListIpdbDataCenter)
+		r.HandleFunc("/ipdb/datacenter/create", deps.CreateIpdbDataCenter)
+		r.HandleFunc("/ipdb/datacenter/update", deps.UpdateIpdbDataCenter)
 	})
 }
