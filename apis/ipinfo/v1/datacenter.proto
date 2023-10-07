@@ -34,8 +34,13 @@ message IPDataCenterRequest {
     (google.api.field_behavior) = REQUIRED,
     (validate.rules).string.min_len = 1
   ];
-
   map<string, google.protobuf.Any> payload = 2;
+
+  string domain = 3;
+  string ip_start = 4;
+  string ip_end = 5;
+  int64 created_ts = 6;
+  int64 updated_ts = 7;
 }
 
 message IPDataCenterResponse {

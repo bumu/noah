@@ -1,7 +1,13 @@
 package handlers
 
 import (
+	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
+
+	"apigw/apps/apigw/data/schema"
+	ipinfov1 "apigw/gen/go/ipinfo/v1"
 
 	"github.com/go-chi/render"
 )
@@ -22,7 +28,41 @@ func (deps registerDeps) ListIpdbDataCenter(w http.ResponseWriter, r *http.Reque
 	render.JSON(w, r, &dcList)
 }
 
-func (desp registerDeps) CreateIpdbDataCenter(w http.ResponseWriter, r *http.Request) {
+func (deps registerDeps) CreateIpdbDataCenter(w http.ResponseWriter, r *http.Request) {
+	p, err := io.ReadAll(r.Body)
+	if err != nil {
+		w.Write([]byte("create ipdb datacenter error" + err.Error()))
+		return
+	}
+
+	println(err == nil, p)
+
+	var ret ipinfov1.IPDataCenterRequest
+
+	err = json.Unmarshal(p, &ret)
+	if err != nil {
+		w.Write([]byte("create ipdb datacenter error" + err.Error()))
+		return
+	}
+
+	schema := schema.IpdbDataCenter{
+		Name:      ret.Name,
+		Domain:    ret.Domain,
+		IpStart:   ret.IpStart,
+		IpEnd:     ret.IpEnd,
+		CreatedTs: ret.CreatedTs,
+		UpdatedTs: ret.UpdatedTs,
+	}
+
+	fmt.Println("===", schema)
+
+	/*
+		err = deps.IpdbDataCenterRepo.Create(r.Context(), &schema)
+		if err != nil {
+			w.Write([]byte("get key error\n"))
+		}
+	*/
+
 	w.Write([]byte("create datacenter"))
 }
 

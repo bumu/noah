@@ -1,4 +1,4 @@
-SERVICE := bumu
+SERVICE := apigw
 
 all: help
 
@@ -39,5 +39,12 @@ conf secret: ## Upddate config
 bash: ## Enter bash
 	fly ssh console -a ${SERVICE}
 
-db sql pg:
-	fly postgres connect -a ${SERVICE}-db
+docker:
+	docker compose build ${SERVICE}
+	docker compose up ${SERVICE}
+
+updb:
+	docker compose up -d ${SERVICE}-db --force-recreate
+
+db:
+	docker compose exec ${SERVICE}-db bash

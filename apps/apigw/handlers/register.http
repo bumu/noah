@@ -43,9 +43,9 @@ POST {{hostname}}/v1/ipdb/datacenter/create
 
 {
     "name": "Tencent Cloud",
-    "isp_domain": "https://intl.cloud.tencent.com/",
+    "domain": "https://intl.cloud.tencent.com/",
     "ip_start": "1.12.0.0",
     "ip_end": "1.15.255.255",
-    "created_ts": "17563648",
-    "updated_ts": "17825791"
+    "created_ts": 17563648,
+    "updated_ts": 17825791
 }

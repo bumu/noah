@@ -1,10 +1,29 @@
-version: '3.3'
+version: "3.3"
+
+volumes:
+  db:
+    driver: local
 
 services:
+  apigw-db:
+    container_name: apigw-db
+    image: postgres:14.1-alpine
+    restart: always
+    cap_add:
+      - SYS_NICE
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=apigw
+    ports:
+      - "5432:5432"
+    volumes:
+      - db:/var/lib/postgresql/data
+
   apigw:
     container_name: apigw
     restart: always
-    image: 'airdb/apigw:latest'
+    image: "airdb/apigw:latest"
     build:
       context: .
       dockerfile: Dockerfile
@@ -12,3 +31,8 @@ services:
       - "8080:8080/tcp"
     volumes:
       - ./config.yaml:/app/config.yaml:ro
+    #command: sleep 3600
+    depends_on:
+      - apigw-db
+    links:
+      - apigw-db

@@ -18,4 +18,5 @@ COPY --from=builder /build/config.yaml /app/
 EXPOSE 8080
 
 #ENTRYPOINT ["sleep", "3600"]
-ENTRYPOINT ["/app/apigw"]
+#ENTRYPOINT ["/app/apigw"]
+CMD ["/app/apigw"]
