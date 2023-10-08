@@ -11,15 +11,15 @@ import (
 	"github.com/go-chi/render"
 )
 
-func (deps registerDeps) GetIpdbDataCenter(w http.ResponseWriter, r *http.Request) {
+func (deps registerDeps) GetUseragent(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("get user"))
 }
 
-func (deps registerDeps) ListIpdbDataCenter(w http.ResponseWriter, r *http.Request) {
+func (deps registerDeps) ListUseragent(w http.ResponseWriter, r *http.Request) {
 	offset := 0
 	limit := 10
 
-	dcList, err := deps.IpdbDataCenterRepo.List(r.Context(), limit, offset)
+	dcList, err := deps.UseragentRepo.List(r.Context(), limit, offset)
 	if err != nil {
 		w.Write([]byte("get key error\n"))
 	}
@@ -27,7 +27,7 @@ func (deps registerDeps) ListIpdbDataCenter(w http.ResponseWriter, r *http.Reque
 	render.JSON(w, r, &dcList)
 }
 
-func (deps registerDeps) CreateIpdbDataCenter(w http.ResponseWriter, r *http.Request) {
+func (deps registerDeps) CreateUseragent(w http.ResponseWriter, r *http.Request) {
 	p, err := io.ReadAll(r.Body)
 	if err != nil {
 		w.Write([]byte("create ipdb datacenter error" + err.Error()))
@@ -44,16 +44,9 @@ func (deps registerDeps) CreateIpdbDataCenter(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	schema := schema.IpdbDataCenter{
-		Name:       ret.Name,
-		Domain:     ret.Domain,
-		IpStart:    ret.IpStart,
-		IpEnd:      ret.IpEnd,
-		IpStartInt: ret.IpStartInt,
-		IpEndInt:   ret.IpEndInt,
-	}
+	schema := schema.Useragent{}
 
-	err = deps.IpdbDataCenterRepo.Create(r.Context(), &schema)
+	err = deps.UseragentRepo.Create(r.Context(), &schema)
 	if err != nil {
 		w.Write([]byte("get key error\n"))
 	}
@@ -61,10 +54,10 @@ func (deps registerDeps) CreateIpdbDataCenter(w http.ResponseWriter, r *http.Req
 	w.Write([]byte("create datacenter"))
 }
 
-func (deps registerDeps) UpdateIpdbDataCenter(w http.ResponseWriter, r *http.Request) {
+func (deps registerDeps) UpdateUseragent(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("update datacenter"))
 }
 
-func (deps registerDeps) DeleteIpdbDataCenter(w http.ResponseWriter, r *http.Request) {
+func (deps registerDeps) DeleteUseragent(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("delete datacenter"))
 }

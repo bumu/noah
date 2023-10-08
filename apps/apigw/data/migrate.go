@@ -14,5 +14,8 @@ func Migrate(conn *gorm.DB) {
 		&schema.IpdbV6{},
 		&schema.Sensitive{},
 		&schema.IpdbDataCenter{},
+		&schema.IpdbClientIp{},
+		&schema.Useragent{},
+		&schema.UseragentOS{},
 	)
 }

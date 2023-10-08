@@ -15,6 +15,9 @@ func FxOptions() fx.Option {
 			repos.NewIpdbV6Repo,
 			repos.NewSensitiveRepo,
 			repos.NewIpdbDataCenterRepo,
+			repos.NewIpdbClientIpRepo,
+			repos.NewUseragentRepo,
+			repos.NewUseragentOSRepo,
 		),
 	)
 }

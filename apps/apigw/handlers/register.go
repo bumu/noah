@@ -19,6 +19,10 @@ type registerDeps struct {
 	UserRepo           *repos.UserRepo
 	SensitiveRepo      *repos.SensitiveRepo
 	IpdbDataCenterRepo *repos.IpdbDataCenterRepo
+	IpdbClientIpRepo   *repos.IpdbClientIpRepo
+	UseragentRepo      *repos.UseragentRepo
+	UseragentOSRepo    *repos.UseragentOSRepo
+
 	// Checker *sensitivemod.Checker
 }
 
@@ -63,5 +67,10 @@ func Register(deps registerDeps) {
 		r.HandleFunc("/ipdb/datacenter/list", deps.ListIpdbDataCenter)
 		r.HandleFunc("/ipdb/datacenter/create", deps.CreateIpdbDataCenter)
 		r.HandleFunc("/ipdb/datacenter/update", deps.UpdateIpdbDataCenter)
+
+		r.HandleFunc("/ipdb/clientip", deps.GetIpdbClientIp)
+		r.HandleFunc("/ipdb/clientip/list", deps.ListIpdbClientIp)
+		r.HandleFunc("/ipdb/clientip/create", deps.CreateIpdbClientIp)
+		r.HandleFunc("/ipdb/clientip/update", deps.UpdateIpdbClientIp)
 	})
 }
