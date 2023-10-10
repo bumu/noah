@@ -6,7 +6,6 @@ import (
 	"apigw/apps/apigw/data/repos"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/fx"
 )
 
@@ -31,9 +30,16 @@ func Register(deps registerDeps) {
 		r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("welcome to apigw service\n"))
 		})
-		r.Handle("/metrics", promhttp.Handler())
+		// r.Handle("/metrics", promhttp.Handler())
 		r.HandleFunc("/*", func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("pong\n"))
+		})
+	})
+
+	// Internal management apis.
+	deps.Mux.Route("/internal", func(r chi.Router) {
+		r.HandleFunc("/metrics", func(w http.ResponseWriter, r *http.Request) {
+			w.Write([]byte("ok\n"))
 		})
 	})
 

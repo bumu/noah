@@ -39,9 +39,9 @@ conf secret: ## Upddate config
 bash: ## Enter bash
 	fly ssh console -a ${SERVICE}
 
-docker:
+up:
 	docker compose build ${SERVICE}
-	docker compose up ${SERVICE}
+	docker compose up -d ${SERVICE} --force-recreate
 
 updb:
 	docker compose up -d ${SERVICE}-db --force-recreate
