@@ -1,9 +1,8 @@
 package bootstrap
 
 import (
-	"apigw/modules/dbmod"
-
-	"apigw/apps/apigw/handlers"
+	"noah/apps/apigw/handlers"
+	"noah/modules/dbmod"
 
 	"go.uber.org/fx"
 )

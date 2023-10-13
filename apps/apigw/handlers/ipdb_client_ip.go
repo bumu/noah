@@ -6,9 +6,10 @@ import (
 	"io"
 	"net/http"
 
-	"apigw/apps/apigw/data/schema"
-	ipinfov1 "apigw/gen/go/ipinfo/v1"
-	"apigw/pkg/ipkit"
+	"noah/apps/apigw/data/schema"
+	"noah/pkg/ipkit"
+
+	ipinfov1 "noah/gen/go/ipinfo/v1"
 
 	"github.com/go-chi/render"
 )

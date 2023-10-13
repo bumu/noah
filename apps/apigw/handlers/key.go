@@ -4,8 +4,8 @@ import (
 	"math/rand"
 	"net/http"
 
-	"apigw/apps/apigw/data/schema"
-	userv1 "apigw/gen/go/user/v1"
+	"noah/apps/apigw/data/schema"
+	userv1 "noah/gen/go/user/v1"
 
 	"github.com/go-chi/render"
 )

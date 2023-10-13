@@ -28,10 +28,7 @@ buf:
 	buf generate
 
 local: ## Run service locally 
-	go run main.go
-
-bash: ## Enter bash
-	fly ssh console -a ${SERVICE}
+	go run main.go run -c config.local.yaml
 
 up:
 	docker compose build ${SERVICE}
@@ -42,6 +39,10 @@ start:
 
 stop:
 	docker compose stop ${SERVICE}
+
+bash: ## Enter bash
+	docker compose exec ${SERVICE} bash
+
 
 logs:
 	docker compose logs -f ${SERVICE}

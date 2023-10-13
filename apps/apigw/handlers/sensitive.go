@@ -6,8 +6,8 @@ import (
 	"io"
 	"net/http"
 
-	"apigw/apps/apigw/data/schema"
-	sensitivev1 "apigw/gen/go/apigw/v1"
+	"noah/apps/apigw/data/schema"
+	sensitivev1 "noah/gen/go/apigw/v1"
 
 	"github.com/go-chi/render"
 )

@@ -5,8 +5,8 @@ import (
 	"io"
 	"net/http"
 
-	"apigw/apps/apigw/data/schema"
-	ipinfov1 "apigw/gen/go/ipinfo/v1"
+	"noah/apps/apigw/data/schema"
+	ipinfov1 "noah/gen/go/ipinfo/v1"
 
 	"github.com/go-chi/render"
 )

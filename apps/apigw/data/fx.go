@@ -1,7 +1,7 @@
 package data
 
 import (
-	"apigw/apps/apigw/data/repos"
+	"noah/apps/apigw/data/repos"
 
 	"go.uber.org/fx"
 )

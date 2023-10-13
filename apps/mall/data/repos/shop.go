@@ -3,7 +3,7 @@ package repos
 import (
 	"context"
 
-	"apigw/apps/mall/data/schema"
+	"noah/apps/mall/data/schema"
 
 	"gorm.io/gorm"
 )

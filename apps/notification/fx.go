@@ -1,7 +1,7 @@
 package apigw
 
 import (
-	"apigw/apps/mall/data"
+	"noah/apps/mall/data"
 
 	"go.uber.org/fx"
 )

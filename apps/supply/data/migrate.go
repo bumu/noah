@@ -1,7 +1,7 @@
 package data
 
 import (
-	"apigw/apps/apigw/data/schema"
+	"noah/apps/apigw/data/schema"
 
 	"gorm.io/gorm"
 )

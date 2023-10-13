@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"apigw/apps/apigw/data/repos"
+	"noah/apps/apigw/data/repos"
 
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/fx"

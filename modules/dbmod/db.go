@@ -1,8 +1,9 @@
 package dbmod
 
 import (
-	"apigw/pkg/configkit"
 	"fmt"
+
+	"noah/pkg/configkit"
 
 	"github.com/xo/dburl"
 	"gorm.io/driver/mysql"

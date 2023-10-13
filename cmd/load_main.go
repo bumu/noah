@@ -1,5 +1,6 @@
-package main
+package cmd
 
+/*
 import (
 	"encoding/csv"
 	"fmt"
@@ -71,13 +72,6 @@ func createIpdbClientIpList(data [][]string) []ipinfov1.IpdbClientIpRequest {
 					rec.IspName = field
 				case 3:
 					rec.IpCity = field
-					/*
-						case 4:
-							n, err := strconv.ParseInt(field, 10, 64)
-							if err == nil {
-								rec.Cnt = n
-							}
-					*/
 				}
 			}
 			// fmt.Println("===", rec.Ip, ipkit.Ip2Int(rec.Ip))
@@ -134,3 +128,5 @@ func main() {
 
 	createIpdbClientIpList(data)
 }
+
+*/
