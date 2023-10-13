@@ -1,4 +1,4 @@
-SERVICE := apigw
+SERVICE := noah
 
 all: help
 
@@ -27,14 +27,8 @@ init:  ## Init project
 buf:
 	buf generate
 
-local:
+local: ## Run service locally 
 	go run main.go
-
-deploy: ## Deploy
-	fly deploy -a ${SERVICE} --no-cache
-
-conf secret: ## Upddate config
-	fly secrets import -a ${SERVICE} < fly.env
 
 bash: ## Enter bash
 	fly ssh console -a ${SERVICE}
@@ -42,6 +36,15 @@ bash: ## Enter bash
 up:
 	docker compose build ${SERVICE}
 	docker compose up -d ${SERVICE} --force-recreate
+
+start:
+	docker compose start ${SERVICE}
+
+stop:
+	docker compose stop ${SERVICE}
+
+logs:
+	docker compose logs -f ${SERVICE}
 
 updb:
 	docker compose up -d ${SERVICE}-db --force-recreate
