@@ -1,7 +1,7 @@
-package apigw
+package sgw
 
 import (
-	"noah/apps/mall/data"
+	"noah/apps/sgw/data"
 
 	"go.uber.org/fx"
 )

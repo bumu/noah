@@ -7,11 +7,11 @@ package cmd
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
-
 	"noah/apps/apigw"
+	"noah/apps/sgw"
 	"noah/bootstrap"
-	"noah/pkg/configkit"
 
 	"github.com/spf13/cobra"
 	"go.uber.org/fx"
@@ -20,17 +20,13 @@ import (
 // runCmd represents the run command
 var runCmd = &cobra.Command{
 	Use:   "run",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Run noah apps",
 	Run: func(cmd *cobra.Command, args []string) {
 		run()
 	},
 }
+
+var runApp string
 
 func init() {
 	rootCmd.AddCommand(runCmd)
@@ -44,6 +40,7 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// runCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	runCmd.PersistentFlags().StringVarP(&runApp, "app", "a", "all", "app name is default")
 }
 
 type invokeDeps struct {
@@ -53,12 +50,30 @@ type invokeDeps struct {
 }
 
 func run() {
-	configkit.Init()
+	// Init config when run cobra on OnInitialize().
+	// configkit.Init()
 
-	app := fx.New(
+	opts := []fx.Option{
 		bootstrap.FxOptions(),
-		apigw.FxOptions(),
-		// sensitivemod.FxOptions(),
+	}
+
+	// Init or create database.
+	switch runApp {
+	case "apigw":
+		opts = append(opts, apigw.FxOptions())
+	case "sgw":
+		opts = append(opts, sgw.FxOptions())
+	case "all":
+		opts = append(opts, apigw.FxOptions())
+		opts = append(opts, sgw.FxOptions())
+	default:
+		log.Println("no app database init")
+	}
+
+	fmt.Println(opts)
+
+	// Add invoke func to opts.
+	opts = append(opts,
 		fx.Invoke(func(lc fx.Lifecycle, deps invokeDeps) {
 			lc.Append(fx.Hook{
 				OnStart: func(ctx context.Context) error {
@@ -71,8 +86,8 @@ func run() {
 					return errors.Join(deps.Server.Stop())
 				},
 			})
-		}),
-	)
+		}))
 
+	app := fx.New(opts...)
 	app.Run()
 }

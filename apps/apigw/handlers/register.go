@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"net/http"
-
 	"noah/apps/apigw/data/repos"
 
 	"github.com/go-chi/chi/v5"
@@ -26,23 +24,24 @@ type registerDeps struct {
 }
 
 func Register(deps registerDeps) {
-	deps.Mux.Route("/", func(r chi.Router) {
-		r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-			w.Write([]byte("welcome to apigw service\n"))
+	/*
+		deps.Mux.Route("/", func(r chi.Router) {
+			r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+				w.Write([]byte("welcome to apigw service\n"))
+			})
+			// r.Handle("/metrics", promhttp.Handler())
+			r.HandleFunc("/*", func(w http.ResponseWriter, r *http.Request) {
+				w.Write([]byte("pong\n"))
+			})
 		})
-		// r.Handle("/metrics", promhttp.Handler())
-		r.HandleFunc("/*", func(w http.ResponseWriter, r *http.Request) {
-			w.Write([]byte("pong\n"))
-		})
-	})
 
-	// Internal management apis.
-	deps.Mux.Route("/internal", func(r chi.Router) {
-		r.HandleFunc("/metrics", func(w http.ResponseWriter, r *http.Request) {
-			w.Write([]byte("ok\n"))
+		// Internal management apis.
+		deps.Mux.Route("/internal", func(r chi.Router) {
+			r.HandleFunc("/metrics", func(w http.ResponseWriter, r *http.Request) {
+				w.Write([]byte("ok\n"))
+			})
 		})
-	})
-
+	*/
 	// Refer: https://google.aip.dev/158
 	// method order: get, list, create, update, delete.
 	deps.Mux.Route("/v1", func(r chi.Router) {

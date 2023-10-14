@@ -1,8 +1,11 @@
 package bootstrap
 
 import (
-	"noah/apps/apigw/handlers"
 	"noah/modules/dbmod"
+
+	apigwHandler "noah/apps/apigw/handlers"
+	defaultHandler "noah/apps/default/handlers"
+	sgwHandler "noah/apps/sgw/handlers"
 
 	"go.uber.org/fx"
 )
@@ -14,6 +17,10 @@ func FxOptions() fx.Option {
 			New,
 			NewMux,
 		),
-		fx.Invoke(handlers.Register),
+
+		// Register handlers.
+		fx.Invoke(defaultHandler.Register),
+		fx.Invoke(apigwHandler.Register),
+		fx.Invoke(sgwHandler.Register),
 	)
 }

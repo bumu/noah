@@ -6,6 +6,8 @@ import (
 	"github.com/spf13/viper"
 )
 
+var CfgFile string
+
 type Config struct {
 	Addr        string `mapstructure:"addr" default:":8080"`
 	RedisURL    string `mapstructure:"redis_url"`
@@ -15,13 +17,16 @@ type Config struct {
 var GlobalConfig Config
 
 func Init() {
+	// log.Println("Load config ", CfgFile)
+	viper.SetConfigName(CfgFile)
+
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
 	viper.AddConfigPath("/app/")
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			panic("config.yaml file not found")
+			panic("Configfile not found: " + CfgFile)
 		}
 	}
 
@@ -30,5 +35,6 @@ func Init() {
 		log.Fatalf("unable to decode into struct, %v", err)
 	}
 
-	log.Println("read config from file: ", GlobalConfig.DatabaseURL)
+	log.Println("Using config file:", viper.ConfigFileUsed())
+	log.Println("Read config from file: ", GlobalConfig.DatabaseURL)
 }

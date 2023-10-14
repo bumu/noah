@@ -11,15 +11,16 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
 	"github.com/go-chi/render"
-	"go.uber.org/fx"
 )
 
+/*
 type serverDeps struct {
 	fx.In
 }
+*/
 
 type Server struct {
-	deps *serverDeps
+	// deps *serverDeps
 
 	mux    *chi.Mux
 	server *http.Server

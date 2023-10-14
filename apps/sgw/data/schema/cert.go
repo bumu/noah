@@ -1,17 +1,29 @@
 package schema
 
-/*
 import "gorm.io/gorm"
 
-type User struct {
+type GatewayCert struct {
 	gorm.Model
 
-	LoginName string
-	Password  string
+	CertType         string
+	CertKey          string
+	CertCSR          string
+	Issuer           string
+	CertIntermediate string
+	CertChain        string
+	CertSans         string
+
+	NotBefore uint64
+	NotAfter  uint64
+
+	CommonName string
+	CertName   string
+	CertStatus string
+	Comment    string
+	Enabled    bool
 }
 
 // TableName overrides the table name used by User to `profiles`
-func (User) TableName() string {
-	return "tbl_users"
+func (GatewayCert) TableName() string {
+	return "tbl_gateway_cert"
 }
-*/

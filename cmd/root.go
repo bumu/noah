@@ -4,6 +4,7 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"noah/pkg/configkit"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -13,6 +14,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "noah",
 	Short: "Noah a integrate service based on powerful Ark framework.",
+
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
@@ -36,7 +38,21 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	rootCmd.CompletionOptions.DisableDefaultCmd = true
+	rootCmd.CompletionOptions.DisableDescriptions = true
 
+	cobra.OnInitialize(initConfig)
+
+	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	// rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "config", "config file (default is config.yaml)")
+	rootCmd.PersistentFlags().StringVarP(&configkit.CfgFile, "config", "c", "config", "config file (default is config.yaml)")
+	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.cobra-example.yaml)")
+
+	// rootCmd.Flags().StringVar(&cfgFile, "config", "c", "config", "config file (default is config.yaml)")
+	// runCmd.PersistentFlags().StringVar(&cfgFile, "config", "config1", "config file (default is config.yaml)")
+}
+
+func initConfig() {
+	configkit.Init()
 }
