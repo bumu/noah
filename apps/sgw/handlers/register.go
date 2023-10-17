@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"net/http"
-	"noah/apps/sgw/data/repos"
 
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/fx"
@@ -13,7 +12,7 @@ type registerDeps struct {
 
 	Mux *chi.Mux
 
-	GatewayDomainRepo *repos.GatewayDomainRepo
+	// GatewayDomainRepo *repos.GatewayDomainRepo
 }
 
 // Refer: https://google.aip.dev/158

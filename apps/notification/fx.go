@@ -1,7 +1,7 @@
-package apigw
+package notification
 
 import (
-	"noah/apps/mall/data"
+	"noah/apps/notification/data"
 
 	"go.uber.org/fx"
 )
