@@ -12,6 +12,6 @@ type UserSession struct {
 }
 
 // TableName overrides the table name used by User to `profiles`
-func (UserAccount) TableName() string {
+func (UserSession) TableName() string {
 	return "tbl_user_session"
 }
