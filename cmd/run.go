@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"log"
 	"noah/apps/apigw"
+	"noah/apps/infra"
 	"noah/apps/notification"
 	"noah/apps/sgw"
 	"noah/bootstrap"
@@ -70,6 +71,7 @@ func run() {
 		opts = append(opts, apigw.FxOptions())
 		opts = append(opts, sgw.FxOptions())
 		opts = append(opts, notification.FxOptions())
+		opts = append(opts, infra.FxOptions())
 	default:
 		log.Println("no app database init")
 	}

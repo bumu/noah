@@ -5,6 +5,7 @@ import (
 
 	apigwHandler "noah/apps/apigw/handlers"
 	defaultHandler "noah/apps/default/handlers"
+	infraHandler "noah/apps/infra/handlers"
 	sgwHandler "noah/apps/sgw/handlers"
 
 	"go.uber.org/fx"
@@ -22,5 +23,6 @@ func FxOptions() fx.Option {
 		fx.Invoke(defaultHandler.Register),
 		fx.Invoke(apigwHandler.Register),
 		fx.Invoke(sgwHandler.Register),
+		fx.Invoke(infraHandler.Register),
 	)
 }

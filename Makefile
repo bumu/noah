@@ -30,8 +30,11 @@ buf:
 local: ## Run service locally 
 	go run main.go run -c config.local.yaml
 
-up:
+build: ## Build or rebuild docker image
+	#docker compose build --no-cache
 	docker compose build ${SERVICE}
+
+up:
 	docker compose up -d ${SERVICE} --force-recreate
 
 start:
@@ -43,12 +46,11 @@ stop:
 bash: ## Enter bash
 	docker compose exec ${SERVICE} bash
 
-
 logs:
 	docker compose logs -f ${SERVICE}
 
-updb:
+dbup:
 	docker compose up -d ${SERVICE}-db --force-recreate
 
-db:
+dbbash:
 	docker compose exec ${SERVICE}-db bash
