@@ -1,4 +1,4 @@
-package handlers
+package controllers
 
 import (
 	"net/http"
@@ -10,10 +10,10 @@ import (
 func (deps registerDeps) CreateVisitRecord(w http.ResponseWriter, r *http.Request) {
 
 	hostname := chi.URLParam(r, "hostname")
-	//err = deps.IpdbClientIpRepo.Create(r.Context(), &schema)
+	ip := r.Header.Get("Fly-Client-IP")
 
 	schema := schema.InfraLinuxMotd{
-		IP:       r.RemoteAddr,
+		IP:       ip,
 		Hostname: hostname,
 	}
 
