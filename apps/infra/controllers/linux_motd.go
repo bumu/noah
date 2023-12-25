@@ -57,3 +57,12 @@ func (deps registerDeps) CreateVisitRecord(w http.ResponseWriter, r *http.Reques
 	// set http status = 200
 	w.WriteHeader(http.StatusOK)
 }
+
+func (deps registerDeps) Count(w http.ResponseWriter, r *http.Request) {
+	cnt, err := deps.InfraLinuxRepo.Count(r.Context())
+	if err != nil {
+		w.Write([]byte("get key error\n"))
+	}
+
+	w.Write([]byte(fmt.Sprintf("login count: %d", cnt)))
+}
