@@ -32,5 +32,6 @@ func Register(deps registerDeps) {
 		})
 
 		r.HandleFunc("/infra/motd/{hostname}", deps.CreateVisitRecord)
+		r.HandleFunc("/infra/linux/{hostname}", deps.CreateVisitRecord)
 	})
 }

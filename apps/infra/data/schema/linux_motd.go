@@ -7,6 +7,7 @@ type InfraLinuxMotd struct {
 
 	IP       string
 	Hostname string
+	Action   string
 }
 
 // TableName overrides the table name used by User to `profiles`
