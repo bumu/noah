@@ -33,10 +33,8 @@ func (r InfraLinuxRepo) List(ctx context.Context, limit, offset int) ([]*schema.
 	return dst, err
 }
 
-func (r InfraLinuxRepo) Count(ctx context.Context) (int64, error) {
+func (r InfraLinuxRepo) Count(ctx context.Context) (loginCnt int64, logoutCnt int64, cmdCnt int64, err error) {
 	dst := []*schema.InfraLinuxMotd{}
-
-	var cnt int64 = 0
 
 	// loc, _ := time.LoadLocation("Asia/Singapore")
 	// now := time.Now().In(loc)
@@ -48,7 +46,14 @@ func (r InfraLinuxRepo) Count(ctx context.Context) (int64, error) {
 	today := now.Truncate(24 * time.Hour).Add(-10 * time.Hour)
 	tmr := now.Truncate(24 * time.Hour).Add(24 * time.Hour).Add(-10 * time.Hour)
 
-	err := r.Conn.Debug().Where("action = ? and created_at BETWEEN ? AND ?", "login", today, tmr).
-		Find(&dst).Count(&cnt).Error
-	return cnt, err
+	r.Conn.Debug().Where("action = ? and created_at BETWEEN ? AND ?", "login", today, tmr).
+		Find(&dst).Count(&loginCnt)
+
+	r.Conn.Debug().Where("action = ? and created_at BETWEEN ? AND ?", "logout", today, tmr).
+		Find(&dst).Count(&logoutCnt)
+
+	r.Conn.Debug().Where("created_at BETWEEN ? AND ?", "logout", today, tmr).Not("action = ?", "login").Not("action = ?", "logout").
+		Find(&dst).Count(&cmdCnt)
+
+	return loginCnt, logoutCnt, cmdCnt, err
 }
