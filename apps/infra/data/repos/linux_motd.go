@@ -52,7 +52,7 @@ func (r InfraLinuxRepo) Count(ctx context.Context) (loginCnt int64, logoutCnt in
 	r.Conn.Debug().Where("action = ? and created_at BETWEEN ? AND ?", "logout", today, tmr).
 		Find(&dst).Count(&logoutCnt)
 
-	r.Conn.Debug().Where("created_at BETWEEN ? AND ?", "logout", today, tmr).Not("action = ?", "login").Not("action = ?", "logout").
+	r.Conn.Debug().Where("created_at BETWEEN ? AND ?", today, tmr).Not("action = ?", "login").Not("action = ?", "logout").
 		Find(&dst).Count(&cmdCnt)
 
 	return loginCnt, logoutCnt, cmdCnt, err
