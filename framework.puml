@@ -1,0 +1,23 @@
+@startuml noah
+skinparam monochrome true
+skinparam text {
+    FontColor Success Green
+}
+
+actor Participant as User
+entity      Makefile      as Makefile
+entity      Run.go    as RunGo
+entity      Bootstrap as Bootstrap
+entity      App as App
+entity      Handlers as Handlers
+entity      Repo as Repo
+database    Schema as Schema
+
+Makefile -> RunGo : run
+RunGo -> Bootstrap : Bootstrap
+Bootstrap -> App : App FxOptions
+App -> Handlers : Handlers 
+Handlers -> Repo : Repo
+Repo -> Schema : Schema
+
+@enduml
