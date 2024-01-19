@@ -21,9 +21,11 @@ func Register(deps registerDeps) {
 	// method order: get, list, create, update, delete.
 	deps.Mux.Route("/apis/v1/sgw/", func(r chi.Router) {
 		r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-			w.Write([]byte("welcome to apigw service\n"))
+			w.Write([]byte("welcome to sgw service\n"))
 		})
 		r.Get("/domain", deps.ListDomain)
 		r.Get("/dns", deps.ListDomain)
+		r.Get("/cert", deps.ListDomain)
+		r.Get("/alb", deps.ListDomain)
 	})
 }

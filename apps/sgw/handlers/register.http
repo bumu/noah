@@ -1,0 +1,16 @@
+APIGW Service
+
+@hostname = http://127.0.0.1:8080
+
+
+### Domain
+GET {{hostname}}/apis/v1/sgw/domain
+
+
+### DNS
+GET {{hostname}}/apis/v1/sgw/dns
+
+
+### Cert
+GET {{hostname}}/apis/v1/sgw/cert
+
