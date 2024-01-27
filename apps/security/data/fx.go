@@ -9,7 +9,8 @@ import (
 func FxOptions() fx.Option {
 	return fx.Options(
 		fx.Provide(
-			repos.NewMallShopRepo,
+			repos.NewSecurityDeviceRepo,
+			repos.NewSecurityUserAgentRepo,
 		),
 	)
 }

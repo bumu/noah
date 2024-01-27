@@ -12,6 +12,7 @@ import (
 	"noah/apps/apigw"
 	"noah/apps/infra"
 	"noah/apps/notification"
+	"noah/apps/security"
 	"noah/apps/sgw"
 	"noah/bootstrap"
 
@@ -70,6 +71,7 @@ func run() {
 	case "all":
 		opts = append(opts, apigw.FxOptions())
 		opts = append(opts, sgw.FxOptions())
+		opts = append(opts, security.FxOptions())
 		opts = append(opts, notification.FxOptions())
 		opts = append(opts, infra.FxOptions())
 	default:
