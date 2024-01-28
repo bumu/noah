@@ -14,7 +14,8 @@ type registerDeps struct {
 
 	Mux *chi.Mux
 
-	SecurityUserAgentRepo *repos.SecurityUserAgentRepo
+	SecurityUserAgentRepo    *repos.SecurityUserAgentRepo
+	SecurityCheckRequestRepo *repos.SecurityCheckRequestRepo
 }
 
 func Register(deps registerDeps) {

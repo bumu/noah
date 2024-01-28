@@ -11,6 +11,7 @@ func FxOptions() fx.Option {
 		fx.Provide(
 			repos.NewSecurityDeviceRepo,
 			repos.NewSecurityUserAgentRepo,
+			repos.NewSecurityCheckRequestRepo,
 		),
 	)
 }

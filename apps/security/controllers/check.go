@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"noah/apps/security/data/schema"
+	secv1 "noah/gen/go/security/v1"
 
 	"github.com/go-chi/render"
 )
@@ -21,18 +22,31 @@ func (deps registerDeps) CheckSec(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var schema schema.SecurityUserAgent
+	var req secv1.SecCheckRequest
 
-	err := json.NewDecoder(r.Body).Decode(&schema)
+	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		w.Write([]byte("invalid request body\n"))
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	fmt.Println("debug===", &schema)
+	fmt.Println("debug===", &req)
 
-	err = deps.SecurityUserAgentRepo.Create(r.Context(), &schema)
+	schema := schema.SecurityCheckRequest{
+		RequestID: req.RequestId,
+		// RemoteAddr:     req.RemoteAddr,
+		UserAgent:      req.UserAgent,
+		FingerprintJa3: req.FingerprintJa3,
+		FingerprintH2:  req.FingerprintH2,
+		Protocol:       req.Protocol,
+		Method:         req.Method,
+		CheckURL:       req.Url,
+		CheckHeader:    req.ReqHeaders,
+		CheckBody:      req.ReqBody,
+	}
+
+	err = deps.SecurityCheckRequestRepo.Create(r.Context(), &schema)
 	if err != nil {
 		w.Write([]byte("record error\n"))
 	}
