@@ -1,3 +1,11 @@
+# Noah
+
+Install
+
+```bash
+brew install bufbuild/buf/buf
+```
+
 # IPDB
 
 IP Database service refer to the collection, analysis, and provision of data related to Internet Protocol (IP) addresses. This information can be used for a variety of purposes, such as improving website analytics, identifying and preventing fraudulent activities, personalizing user experiences, and more.

@@ -19,8 +19,7 @@ init:  ## Init project
 	go install github.com/google/wire/cmd/wire@latest
 	go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@latest
 	go install github.com/PaulXu-cn/go-mod-graph-chart/gmchart@latest
-	go install github.com/bufbuild/protoc-gen-validate@latest
-	go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28.1
+	go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 	go install github.com/lyft/protoc-gen-star/protoc-gen-debug@latest
 
 .PHONY: buf
