@@ -51,5 +51,9 @@ logs:
 dbup:
 	docker compose up -d ${SERVICE}-db --force-recreate
 
+dbrm dbclean:
+	docker compose rm -f ${SERVICE}-db
+	#docker volume rm ${SERVICE}-db
+
 dbbash:
 	docker compose exec ${SERVICE}-db bash
