@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"noah/apps/company/data/schema"
 	companyv1 "noah/gen/go/company/v1"
@@ -53,8 +52,6 @@ func (deps registerDeps) CreateCompanyProfile(w http.ResponseWriter, r *http.Req
 		render.JSON(w, r, &resp)
 		return
 	}
-
-	fmt.Println("debug===", &req)
 
 	schema := schema.CompnayProfile{
 		Name:    req.Name,

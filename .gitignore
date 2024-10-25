@@ -5,7 +5,9 @@ env.fly
 fly.env
 
 gen
+data
 
 output
 noah
 *.csv
+*.xlsx
