@@ -21,7 +21,9 @@ func CallHttpCreate(data interface{}, api string) {
 	fmt.Print(data)
 	client := resty.New()
 
+	// url := "http://127.0.0.1:8080" + api
 	url := "http://127.0.0.1:8080" + api
+
 	resp, err := client.R().
 		SetHeader("Content-Type", "application/json").
 		SetBody(data).
@@ -95,7 +97,7 @@ func readExcelFile(filename string) ([]*companyv1.CreateCompanyProfileRequest, e
 }
 
 func LoadCompany() {
-	filename := "company.xlsx"
+	filename := "data/company.xlsx"
 	// read data from file
 	data, _ := readExcelFile(filename)
 

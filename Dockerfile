@@ -9,7 +9,7 @@ RUN cd /build/ && \
     CGO_ENABLED=0 GOOS=linux go build -buildvcs=false -ldflags '-w -s' -o noah
 
 
-FROM airdb/base:latest
+FROM airdb/alpine:latest
 
 WORKDIR /app/
 
