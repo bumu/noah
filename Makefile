@@ -56,4 +56,4 @@ dbrm dbclean:
 	#docker volume rm ${SERVICE}-db
 
 dbbash:
-	docker compose exec ${SERVICE}-db bash
+	docker compose exec ${SERVICE}-db bash -c "psql  -Upostgres"

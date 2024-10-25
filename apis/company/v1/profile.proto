@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package company.v1;
+
+import "google/api/annotations.proto";
+import "google/api/client.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/any.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "validate/validate.proto";
+
+option go_package = "noah/gen/go/company/v1;systemv1";
+option java_multiple_files = true;
+option java_outer_classname = "ServiceProto";
+option java_package = "com.airdb.apigw.v1";
+
+service CompanyProfile {
+  option (google.api.default_host) = "company.apis.airdb.com";
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {description: "OpenAI Service -- which used to interacitve with openai."};
+
+  // CompanyProfile
+  rpc CompanyProfile(CreateCompanyProfileRequest) returns (CreateCompanyProfileResponse) {
+    option (google.api.http) = {
+      post: "/v1/company/{name=*}"
+      body: "payload"
+      response_body: "data"
+    };
+    option (google.api.method_signature) = "name";
+  }
+}
+
+message CreateCompanyProfileRequest {
+  // The uri of the openai.
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (validate.rules).string.min_len = 1
+  ];
+
+  map<string, google.protobuf.Any> payload = 2;
+  string uen = 3;
+  string address = 4;
+  string website = 5;
+  string phone = 6;
+  int32 status = 8;
+}
+
+message CreateCompanyProfileResponse {
+  google.protobuf.Any data = 4;
+  int32 status = 1;
+}

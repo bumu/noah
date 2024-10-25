@@ -1,0 +1,28 @@
+meta {
+  name: CreateCompanyProfile
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/apis/v1/company/create
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "uen": "",
+    "name": "hello",
+    "address": "world",
+    "website": "airdb.com",
+    "phone": "89417001",
+    "status": 0
+  }
+}
+
+tests {
+  test("status must be 200", function() {
+    expect(res.status).to.eql(200);
+  });
+}
