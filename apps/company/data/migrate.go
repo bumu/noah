@@ -9,5 +9,7 @@ import (
 func Migrate(conn *gorm.DB) {
 	conn.Migrator().AutoMigrate(
 		schema.CompnayProfile{},
+		schema.CompanySSICInfo{},
+		schema.CompanySSICCategory{},
 	)
 }
