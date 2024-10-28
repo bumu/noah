@@ -97,7 +97,7 @@ func readExcelFile(filename string) ([]*companyv1.CreateCompanyProfileRequest, e
 }
 
 func LoadCompany() {
-	filename := "data/company.xlsx"
+	filename := "data_files/company.xlsx"
 	// read data from file
 	data, _ := readExcelFile(filename)
 
