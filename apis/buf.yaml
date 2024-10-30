@@ -1,25 +1,28 @@
-version: v1
-
-name: buf.build/xqbumu/arkport
-
-
+version: v2
+modules:
+  - path: ./
+    name: buf.build/airdb/noah
 deps:
-  - buf.build/googleapis/googleapis
   - buf.build/einride/iam
   - buf.build/envoyproxy/protoc-gen-validate
+  - buf.build/googleapis/googleapis
   - buf.build/grpc-ecosystem/grpc-gateway
-
-breaking:
-  use:
-    - PACKAGE
-  ignore:
-    - google
-
 lint:
   use:
     - DEFAULT
   except:
-    - RPC_RESPONSE_STANDARD_NAME
+    - FIELD_NOT_REQUIRED
+    - PACKAGE_NO_IMPORT_CYCLE
     - RPC_REQUEST_RESPONSE_UNIQUE
+    - RPC_RESPONSE_STANDARD_NAME
   ignore:
-    - google
+    - ./google
+  disallow_comment_ignores: true
+breaking:
+  use:
+    - PACKAGE
+  except:
+    - FIELD_SAME_DEFAULT
+    - PACKAGE_EXTENSION_NO_DELETE
+  ignore:
+    - apis/google
