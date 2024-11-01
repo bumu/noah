@@ -1,5 +1,6 @@
 syntax = "proto3";
 
+// This package represents all information needed to represent a company profile.
 package company.v1;
 
 import "google/api/annotations.proto";
