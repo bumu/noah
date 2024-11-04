@@ -1,0 +1,71 @@
+version: '3'
+
+vars:
+  SERVICE: noah
+  
+tasks:
+  default:
+    desc: Show help messages
+    silent: true
+    cmds:
+      - echo "Welcome to use go-task!"
+      - echo
+      - |
+        echo "Available tasks:"
+        task --list | awk 'NR>1 {print "  " $0}'
+
+  local:
+    desc: Run locally
+    cmds:
+      - go run main.go run -c config.local.yaml
+
+  build:
+    desc: Build binary
+    cmds:
+      - go build -o main main.go
+
+  buf:
+    desc: Run buf generate
+    cmds:
+      - buf generate
+
+
+  docker-build:
+    desc: Build or rebuild docker image
+    cmds:
+      - docker compose build {{.SERVICE}}
+
+  up:
+    desc: Start service in docker
+    cmds:
+      - docker compose up -d {{.SERVICE}} --force-recreate
+
+  start:
+    cmds:
+      - docker compose start {{.SERVICE}}
+
+  stop:
+    cmds:
+      - docker compose stop {{.SERVICE}}
+
+  bash:
+    desc: Enter bash
+    cmds:
+      - docker compose exec {{.SERVICE}} bash
+
+  logs:
+    cmds:
+      - docker compose logs -f {{.SERVICE}}
+
+  dbup:
+    cmds:
+      - docker compose up -d {{.SERVICE}}-db --force-recreate
+
+  dbclean:
+    cmds:
+      - docker compose rm -f {{.SERVICE}}-db
+      # - docker volume rm {{.SERVICE}}-db
+
+  dbbash:
+    cmds:
+      - docker compose exec {{.SERVICE}}-db bash -c "psql -Upostgres"
