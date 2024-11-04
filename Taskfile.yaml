@@ -26,6 +26,7 @@ tasks:
 
   buf:
     desc: Run buf generate
+    dir: apis
     cmds:
       - buf generate
 
@@ -41,10 +42,12 @@ tasks:
       - docker compose up -d {{.SERVICE}} --force-recreate
 
   start:
+    desc: Start service
     cmds:
       - docker compose start {{.SERVICE}}
 
   stop:
+    desc: Stop service
     cmds:
       - docker compose stop {{.SERVICE}}
 
@@ -54,18 +57,22 @@ tasks:
       - docker compose exec {{.SERVICE}} bash
 
   logs:
+    desc: View service logs
     cmds:
       - docker compose logs -f {{.SERVICE}}
 
   dbup:
+    desc: Start database service
     cmds:
       - docker compose up -d {{.SERVICE}}-db --force-recreate
 
   dbclean:
+    desc: Remove database container
     cmds:
       - docker compose rm -f {{.SERVICE}}-db
       # - docker volume rm {{.SERVICE}}-db
 
   dbbash:
+    desc: Enter database shell
     cmds:
       - docker compose exec {{.SERVICE}}-db bash -c "psql -Upostgres"
