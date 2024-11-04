@@ -3,7 +3,7 @@ version: '3'
 vars:
   SERVICE: noah
   DATE:
-    sh: date "+%Y.%m.%d"
+    sh: date "+%Y.%m%d.%H%M"
   
 tasks:
   default:
