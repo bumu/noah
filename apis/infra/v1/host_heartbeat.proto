@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package infra.v1;
+
+import "google/api/annotations.proto";
+import "google/api/client.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "validate/validate.proto";
+
+option go_package = "noah/gen/go/infra/v1;infrav1";
+option java_multiple_files = true;
+option java_outer_classname = "InfraProto";
+option java_package = "com.airdb.infra.v1";
+
+service HostHeartbeatService {
+    option (google.api.default_host) = "apigw.airdb.com";
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
+        description: "Host Heartbeat Service - Monitor host status and health"
+    };
+
+    // ReportHeartbeat allows hosts to report their current status
+    rpc ReportHeartbeat(HeartbeatRequest) returns (HeartbeatResponse) {
+        option (google.api.http) = {
+            post: "/infra/v1/host/heartbeat"
+            body: "payload"
+            response_body: "data"
+        };
+        option (google.api.method_signature) = "hostname";
+    }
+}
+
+message HeartbeatRequest {
+    string ip = 1 [
+        (google.api.field_behavior) = REQUIRED,
+        (validate.rules).string.min_len = 1
+    ];
+    string hostname = 2;
+    map<string, google.protobuf.Any> payload = 3;
+    
+    string arch = 4;
+    string os = 5;
+    string kernel = 6;
+    string system_info = 7;
+    string environment = 8;
+}
+
+message HeartbeatResponse {
+    google.protobuf.Any data = 1;
+    int32 status = 2;
+    string err_msg = 3;
+    
+    // Server-side timestamp when heartbeat was received
+    google.protobuf.Timestamp received_at = 4;
+    
+    // Optional configuration updates for the host
+    map<string, string> config_updates = 5;
+} 

@@ -14,25 +14,27 @@ type registerDeps struct {
 	Mux *chi.Mux
 
 	// GatewayDomainRepo *repos.GatewayDomainRepo
-	InfraLinuxRepo *repos.InfraLinuxRepo
+	InfraLinuxRepo         *repos.InfraLinuxRepo
+	InfraHostHeartbeatRepo *repos.InfraHostHeartbeatRepo
+}
+
+func DefaultRouter(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("welcome to infra service\n"))
 }
 
 // Refer: https://google.aip.dev/158
 func Register(deps registerDeps) {
-	// method order: get, list, create, update, delete.
-	deps.Mux.Route("/v1/infra/", func(r chi.Router) {
-		r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-			w.Write([]byte("welcome to infra service\n"))
-		})
-	})
+	deps.Mux.Route("/apis/infra", func(r chi.Router) {
+		r.HandleFunc("/", DefaultRouter)
 
-	deps.Mux.Route("/apis/v1", func(r chi.Router) {
-		r.HandleFunc("/infra", func(w http.ResponseWriter, r *http.Request) {
-			w.Write([]byte("welcome to infra service\n"))
-		})
+		r.Route("/v1", func(r chi.Router) {
+			r.HandleFunc("/", DefaultRouter)
 
-		r.HandleFunc("/infra/motd/{hostname}", deps.CreateVisitRecord)
-		r.HandleFunc("/infra/linux/{hostname}", deps.CreateVisitRecord)
-		r.HandleFunc("/infra/linux/count", deps.Count)
+			r.HandleFunc("/motd/{hostname}", deps.CreateVisitRecord)
+			r.HandleFunc("/linux/{hostname}", deps.CreateVisitRecord)
+			r.HandleFunc("/linux/count", deps.Count)
+
+			r.HandleFunc("/host/heartbeat", deps.CreateInfraHostHeartbeat)
+		})
 	})
 }

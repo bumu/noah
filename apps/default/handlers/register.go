@@ -1,9 +1,9 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"noah/pkg/configkit"
-	"strings"
 
 	// "noah/apps/apigw/data/repos"
 
@@ -21,28 +21,33 @@ type registerDeps struct {
 func Register(deps registerDeps) {
 	deps.Mux.Route("/", func(r chi.Router) {
 		r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-			msg := "welcome to noah service\n"
-			msg += "Version /v1\n"
-			msg += "\n\n\n"
+			w.Write([]byte("welcome to noah service!\n"))
+		})
 
-			msg += "apps list: " + strings.Join(configkit.Apps, ",")
+		r.HandleFunc("/apis", func(w http.ResponseWriter, r *http.Request) {
+			msg := "welcome to noah service\n"
+			msg += "apps list: \n"
+
+			for _, app := range configkit.Apps {
+				msg += fmt.Sprintf("  - %s\n", app)
+			}
+			msg += "\n"
+
+			msg += "Version /v1\n"
 
 			w.Write([]byte(msg))
 		})
+	})
+
+	// Internal management apis.
+	deps.Mux.Route("/internal", func(r chi.Router) {
 		// r.Handle("/metrics", promhttp.Handler())
-		r.HandleFunc("/*", func(w http.ResponseWriter, r *http.Request) {
-			w.Write([]byte("pong\n"))
+		r.HandleFunc("/metrics", func(w http.ResponseWriter, r *http.Request) {
+			w.Write([]byte("ok\n"))
 		})
 
 		//r.HandleFunc("/debug/pprof/", middleware.Profiler().ServeHTTP)
 		r.Handle("/debug/pprof/*", middleware.Profiler())
 		r.Handle("/debug/*", middleware.Profiler())
-	})
-
-	// Internal management apis.
-	deps.Mux.Route("/internal", func(r chi.Router) {
-		r.HandleFunc("/metrics", func(w http.ResponseWriter, r *http.Request) {
-			w.Write([]byte("ok\n"))
-		})
 	})
 }
