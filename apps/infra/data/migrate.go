@@ -9,5 +9,6 @@ import (
 func Migrate(conn *gorm.DB) {
 	conn.Migrator().AutoMigrate(
 		&schema.InfraLinuxMotd{},
+		&schema.InfraHostHeartbeat{},
 	)
 }

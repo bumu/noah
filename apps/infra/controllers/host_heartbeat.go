@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"noah/apps/infra/data/schema"
@@ -22,10 +23,12 @@ func (deps registerDeps) CreateInfraHostHeartbeat(w http.ResponseWriter, r *http
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		w.Write([]byte("invalid request body\n"))
+		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
+	log.Println("---")
 	schema := &schema.InfraHostHeartbeat{
 		Hostname:   req.Hostname,
 		IP:         req.Ip,

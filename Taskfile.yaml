@@ -2,6 +2,8 @@ version: '3'
 
 vars:
   SERVICE: noah
+  DATE:
+    sh: date "+%Y.%m.%d"
   
 tasks:
   default:
@@ -30,11 +32,17 @@ tasks:
     cmds:
       - buf generate
 
-
   docker-build:
     desc: Build or rebuild docker image
     cmds:
       - docker compose build {{.SERVICE}}
+  
+  docker-push:
+    desc: Push image to docker hub
+    cmds:
+      - docker push airdb/noah:latest
+      - docker tag airdb/noah:latest airdb/noah:{{.DATE}}
+      - docker push airdb/noah:{{.DATE}}
 
   up:
     desc: Start service in docker
