@@ -1,9 +1,7 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
-	"noah/pkg/configkit"
 
 	// "noah/apps/apigw/data/repos"
 
@@ -20,23 +18,8 @@ type registerDeps struct {
 
 func Register(deps registerDeps) {
 	deps.Mux.Route("/", func(r chi.Router) {
-		r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-			w.Write([]byte("welcome to noah service!\n"))
-		})
-
-		r.HandleFunc("/apis", func(w http.ResponseWriter, r *http.Request) {
-			msg := "welcome to noah service\n"
-			msg += "apps list: \n"
-
-			for _, app := range configkit.Apps {
-				msg += fmt.Sprintf("  - %s\n", app)
-			}
-			msg += "\n"
-
-			msg += "Version /v1\n"
-
-			w.Write([]byte(msg))
-		})
+		r.Get("/", deps.DefaultHandler)
+		r.Get("/apis", deps.ListApisHandler)
 	})
 
 	// Internal management apis.
