@@ -1,14 +1,12 @@
+configs/
 config.yaml
 config.*.yaml
 
-env.fly
-fly.env
-
-gen
 data_files
-
-output
-noah
-main
 *.csv
 *.xlsx
+
+gen
+output
+
+main

@@ -13,24 +13,17 @@ tasks:
       - echo "Welcome to use go-task!"
       - echo
       - |
-        echo "Available tasks:"
-        task --list | awk 'NR>1 {print "  " $0}'
+        task --list --sort=none
 
   local:
     desc: Run locally
     cmds:
-      - go run main.go run -c config.local.yaml
+      - go run cmd/noah/main.go run -c configs/config.local.yaml
 
   build:
     desc: Build binary
     cmds:
-      - go build -o main main.go
-
-  buf:
-    desc: Run buf generate
-    dir: apis
-    cmds:
-      - buf generate
+      - go build -o main cmd/noah/main.go
 
   docker-build:
     desc: Build or rebuild docker image
@@ -49,6 +42,11 @@ tasks:
     cmds:
       - docker compose up -d {{.SERVICE}} --force-recreate
 
+  down:
+    desc: Stop and remove {{.SERVICE}} service.
+    cmds:
+      - docker compose up -d {{.SERVICE}} --force-recreate
+      - 
   start:
     desc: Start service
     cmds:
@@ -84,3 +82,9 @@ tasks:
     desc: Enter database shell
     cmds:
       - docker compose exec {{.SERVICE}}-db bash -c "psql -Upostgres"
+
+
+includes:
+    buf: 
+      dir: ./apis/
+      taskfile: ./apis/Taskfile.yml

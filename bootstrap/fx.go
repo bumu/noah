@@ -1,7 +1,7 @@
 package bootstrap
 
 import (
-	"noah/modules/dbmod"
+	"noah/internal/dbmod"
 
 	defaultHandler "noah/apps/default/handlers"
 

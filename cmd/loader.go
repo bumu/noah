@@ -5,7 +5,7 @@ MIT
 package cmd
 
 import (
-	"noah/cmd/loader"
+	"noah/tools/loader"
 
 	"github.com/spf13/cobra"
 )
