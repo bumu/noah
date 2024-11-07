@@ -16,7 +16,7 @@ import (
 	"noah/apps/notification"
 	"noah/apps/security"
 	"noah/apps/sgw"
-	"noah/bootstrap"
+	"noah/internal/bootstrap"
 
 	"github.com/spf13/cobra"
 	"go.uber.org/fx"

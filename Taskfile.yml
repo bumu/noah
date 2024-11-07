@@ -15,76 +15,11 @@ tasks:
       - |
         task --list --sort=none
 
-  local:
-    desc: Run locally
-    cmds:
-      - go run cmd/noah/main.go run -c configs/config.local.yaml
-
-  build:
-    desc: Build binary
-    cmds:
-      - go build -o main cmd/noah/main.go
-
-  docker-build:
-    desc: Build or rebuild docker image
-    cmds:
-      - docker compose build {{.SERVICE}}
-  
-  docker-push:
-    desc: Push image to docker hub
-    cmds:
-      - docker push airdb/noah:latest
-      - docker tag airdb/noah:latest airdb/noah:{{.DATE}}
-      - docker push airdb/noah:{{.DATE}}
-
-  up:
-    desc: Start service in docker
-    cmds:
-      - docker compose up -d {{.SERVICE}} --force-recreate
-
-  down:
-    desc: Stop and remove {{.SERVICE}} service.
-    cmds:
-      - docker compose up -d {{.SERVICE}} --force-recreate
-      - 
-  start:
-    desc: Start service
-    cmds:
-      - docker compose start {{.SERVICE}}
-
-  stop:
-    desc: Stop service
-    cmds:
-      - docker compose stop {{.SERVICE}}
-
-  bash:
-    desc: Enter bash
-    cmds:
-      - docker compose exec {{.SERVICE}} bash
-
-  logs:
-    desc: View service logs
-    cmds:
-      - docker compose logs -f {{.SERVICE}}
-
-  dbup:
-    desc: Start database service
-    cmds:
-      - docker compose up -d {{.SERVICE}}-db --force-recreate
-
-  dbclean:
-    desc: Remove database container
-    cmds:
-      - docker compose rm -f {{.SERVICE}}-db
-      # - docker volume rm {{.SERVICE}}-db
-
-  dbbash:
-    desc: Enter database shell
-    cmds:
-      - docker compose exec {{.SERVICE}}-db bash -c "psql -Upostgres"
-
-
 includes:
     buf: 
       dir: ./apis/
       taskfile: ./apis/Taskfile.yml
+
+    build:
+      dir: ./build/
+      taskfile: ./build/Taskfile.yml

@@ -23,12 +23,12 @@ tasks:
       - go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
       - go install github.com/lyft/protoc-gen-star/protoc-gen-debug@latest
 
-  buf-gen:
+  gen:
     desc: Generate protobuf
     cmds:
       - buf generate
 
-  buf-push:
+  push:
     desc: Push proto to buf.build
     cmds:
       - buf push

@@ -24,14 +24,14 @@ services:
     restart: always
     image: "airdb/noah:latest"
     build:
-      context: .
+      context: ../
       dockerfile: Dockerfile
     environment:
       - TZ=Asia/Shanghai
     ports:
-      - "8080:8080/tcp"
+      - "8080:8000/tcp"
     volumes:
-      - ./configs/config.yaml:/app/config.yaml:ro
+      - ../configs/config.yaml:/app/config.yaml:ro
     #command: sleep 3600
     depends_on:
       - noah-db
