@@ -25,11 +25,11 @@ services:
     image: "airdb/noah:latest"
     build:
       context: ../
-      dockerfile: Dockerfile
+      dockerfile: ./build/Dockerfile
     environment:
       - TZ=Asia/Shanghai
     ports:
-      - "8080:8000/tcp"
+      - "8000:8000/tcp"
     volumes:
       - ../configs/config.yaml:/app/config.yaml:ro
     #command: sleep 3600
