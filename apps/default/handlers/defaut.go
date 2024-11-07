@@ -7,16 +7,27 @@ import (
 )
 
 func (deps registerDeps) DefaultHandler(w http.ResponseWriter, r *http.Request) {
+	// By default, remote address is the client ip.
+	cip := r.RemoteAddr
 
-	cip := r.Header.Get("Fly-Client-IP")
-	if cip == "" {
-		cip = r.RemoteAddr
+	// Use X-Real-Ip if it exists.
+	xRealIp := r.Header.Get("X-Real-Ip")
+	if xRealIp != "" {
+		cip = xRealIp
+	}
+
+	// User direct access to the fly service.
+	flyClientIp := r.Header.Get("Fly-Client-IP")
+	if xRealIp == "" && flyClientIp != "" {
+		cip = flyClientIp
 	}
 
 	w.Write([]byte(fmt.Sprintf("%s\n", cip)))
 
-	headers := r.Header
-	w.Write([]byte(fmt.Sprintf("%s\n", headers)))
+	if r.Header.Get("X-Debug") != "" {
+		headers := r.Header
+		w.Write([]byte(fmt.Sprintf("%s\n", headers)))
+	}
 }
 
 func (deps registerDeps) ListApisHandler(w http.ResponseWriter, r *http.Request) {
