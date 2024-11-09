@@ -38,6 +38,11 @@ func New(mux *chi.Mux) *Server {
 func NewMux() *chi.Mux {
 	mux := chi.NewMux()
 	mux.Use(middleware.Logger)
+	mux.Use(middleware.Recoverer)
+
+	// Clean path.
+	mux.Use(middleware.CleanPath)
+
 	mux.Use(render.SetContentType(render.ContentTypeHTML))
 
 	// Basic CORS

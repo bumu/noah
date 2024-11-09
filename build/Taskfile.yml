@@ -47,7 +47,7 @@ tasks:
   down:
     desc: Stop and remove {{.SERVICE}} service.
     cmds:
-      - docker compose up -d {{.SERVICE}} --force-recreate
+      - docker compose down {{.SERVICE}}
 
   start:
     desc: Start service
