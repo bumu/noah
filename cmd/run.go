@@ -16,6 +16,7 @@ import (
 	"noah/apps/notification"
 	"noah/apps/security"
 	"noah/apps/sgw"
+	"noah/apps/user"
 	"noah/internal/bootstrap"
 
 	"github.com/spf13/cobra"
@@ -60,6 +61,12 @@ func run() {
 
 	opts := []fx.Option{
 		bootstrap.FxOptions(),
+		fx.Provide(
+		// Add your dependency providers here
+		// For example:
+		// database.NewConnection,
+		// repositories.NewUserRepository,
+		),
 	}
 
 	// Init or create database.
@@ -71,12 +78,15 @@ func run() {
 	case "notification":
 		opts = append(opts, notification.FxOptions())
 	case "all":
-		opts = append(opts, apigw.FxOptions())
-		opts = append(opts, sgw.FxOptions())
-		opts = append(opts, security.FxOptions())
-		opts = append(opts, notification.FxOptions())
-		opts = append(opts, infra.FxOptions())
-		opts = append(opts, company.FxOptions())
+		opts = append(opts,
+			apigw.FxOptions(),
+			sgw.FxOptions(),
+			security.FxOptions(),
+			notification.FxOptions(),
+			infra.FxOptions(),
+			company.FxOptions(),
+			user.FxOptions(),
+		)
 	default:
 		log.Println("no app database init")
 	}

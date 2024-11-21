@@ -10,6 +10,7 @@ import (
 	infraControllers "noah/apps/infra/controllers"
 	securityControllers "noah/apps/security/controllers"
 	sgwControllers "noah/apps/sgw/handlers"
+	userHandlers "noah/apps/user/handlers"
 
 	"go.uber.org/fx"
 )
@@ -29,5 +30,6 @@ func FxOptions() fx.Option {
 		fx.Invoke(securityControllers.Register),
 		fx.Invoke(infraControllers.Register),
 		fx.Invoke(companyControllers.Register),
+		fx.Invoke(userHandlers.Register),
 	)
 }

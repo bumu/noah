@@ -18,6 +18,7 @@ require (
 	github.com/xo/dburl v0.23.2
 	github.com/xuri/excelize/v2 v2.9.0
 	go.uber.org/fx v1.22.2
+	golang.org/x/oauth2 v0.22.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20240814211410-ddb44dafa142
 	google.golang.org/grpc v1.64.1
 	google.golang.org/protobuf v1.34.2
