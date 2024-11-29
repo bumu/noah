@@ -20,6 +20,10 @@ func Register(deps registerDeps) {
 	deps.Mux.Route("/", func(r chi.Router) {
 		r.Get("/", deps.DefaultHandler)
 		r.Get("/apis", deps.ListApisHandler)
+		r.Get("/echo", deps.EchoHandler)
+		r.Post("/echo", deps.EchoHandler)
+		r.Get("/*", deps.EchoHandler)
+		r.Post("/*", deps.EchoHandler)
 	})
 
 	// Internal management apis.

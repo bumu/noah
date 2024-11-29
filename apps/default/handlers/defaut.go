@@ -2,10 +2,22 @@ package handlers
 
 import (
 	"fmt"
+	"io"
 	"net"
 	"net/http"
+	"net/url"
 	"noah/pkg/configkit"
+
+	"github.com/go-chi/render"
 )
+
+type EchoMessage struct {
+	Headers http.Header `json:"headers"`
+	Body    string      `json:"body"`
+	Method  string      `json:"method"`
+	Url     string      `json:"url"`
+	Args    url.Values  `json:"args"`
+}
 
 func (deps registerDeps) DefaultHandler(w http.ResponseWriter, r *http.Request) {
 	// By default, remote address is the client ip.
@@ -47,4 +59,22 @@ func (deps registerDeps) ListApisHandler(w http.ResponseWriter, r *http.Request)
 	msg += "Version /v1\n"
 
 	w.Write([]byte(msg))
+}
+
+func (deps registerDeps) EchoHandler(w http.ResponseWriter, r *http.Request) {
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Failed to read body", http.StatusInternalServerError)
+		return
+	}
+
+	msg := &EchoMessage{
+		Headers: r.Header,
+		Body:    string(body),
+		Method:  r.Method,
+		Url:     r.URL.String(),
+		Args:    r.URL.Query(),
+	}
+
+	render.JSON(w, r, msg)
 }
