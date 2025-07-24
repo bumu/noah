@@ -30,7 +30,7 @@ tasks:
   docker-build:
     desc: Build or rebuild docker image
     cmds:
-      - docker compose build {{.SERVICE}}
+      - COMPOSE_BAKE=true docker compose build {{.SERVICE}}
   
   docker-push:
     desc: Push image to docker hub
