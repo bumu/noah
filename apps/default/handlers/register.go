@@ -22,8 +22,9 @@ func Register(deps registerDeps) {
 		r.Get("/apis", deps.ListApisHandler)
 		r.Get("/echo", deps.EchoHandler)
 		r.Post("/echo", deps.EchoHandler)
-		r.Get("/*", deps.EchoHandler)
-		r.Post("/*", deps.EchoHandler)
+		r.Get("/*", deps.NotFoundHandler)
+		r.Post("/*", deps.NotFoundHandler)
+
 	})
 
 	// Internal management apis.

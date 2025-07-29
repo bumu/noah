@@ -18,3 +18,13 @@ func Ip2Int(ipstr string) uint32 {
 	// Print the integer representation of the IP address.
 	return ipInt
 }
+
+func IsIPv4(ipstr string) bool {
+	ip := net.ParseIP(ipstr)
+	return ip != nil && ip.To4() != nil
+}
+
+func IsIPv6(ipstr string) bool {
+	ip := net.ParseIP(ipstr)
+	return ip != nil && ip.To4() == nil && ip.To16() != nil
+}
