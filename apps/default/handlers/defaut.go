@@ -78,3 +78,8 @@ func (deps registerDeps) EchoHandler(w http.ResponseWriter, r *http.Request) {
 
 	render.JSON(w, r, msg)
 }
+
+func (deps registerDeps) NotFoundHandler(w http.ResponseWriter, r *http.Request) {
+	msg := "noah not found\n"
+	w.Write([]byte(msg))
+}

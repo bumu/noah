@@ -8,6 +8,7 @@ import (
 	apigwHandler "noah/apps/apigw/handlers"
 	companyControllers "noah/apps/company/handlers"
 	infraControllers "noah/apps/infra/controllers"
+	ipipHandler "noah/apps/ipip/handlers"
 	securityControllers "noah/apps/security/controllers"
 	sgwControllers "noah/apps/sgw/handlers"
 	userHandlers "noah/apps/user/handlers"
@@ -25,6 +26,7 @@ func FxOptions() fx.Option {
 
 		// Register handlers.
 		fx.Invoke(defaultHandler.Register),
+		fx.Invoke(ipipHandler.Register),
 		fx.Invoke(apigwHandler.Register),
 		fx.Invoke(sgwControllers.Register),
 		fx.Invoke(securityControllers.Register),

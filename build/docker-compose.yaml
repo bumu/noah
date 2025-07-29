@@ -23,6 +23,8 @@ services:
     container_name: noah
     restart: always
     image: "airdb/noah:latest"
+    labels:
+      - dev.orbstack.domains=noah.local
     build:
       context: ../
       dockerfile: ./build/Dockerfile
@@ -32,6 +34,7 @@ services:
       - "8000:8000/tcp"
     volumes:
       - ../configs/config.yaml:/app/config.yaml:ro
+      - /opt/src/ipip:/opt/ipip
     #command: sleep 3600
     depends_on:
       - noah-db
