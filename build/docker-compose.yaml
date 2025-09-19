@@ -23,6 +23,7 @@ services:
     container_name: noah
     restart: always
     image: "airdb/noah:latest"
+    platform: linux/x86_64
     labels:
       - dev.orbstack.domains=noah.local
     build:
