@@ -83,7 +83,7 @@ func (deps registerDeps) IpJsonHandler(w http.ResponseWriter, r *http.Request) {
 		ClientIp: cip,
 		SearchIp: searchIp,
 		Headers:  r.Header,
-		IpInfo:   "",
+		// IpInfo:   "",
 	}
 
 	render.JSON(w, r, msg)

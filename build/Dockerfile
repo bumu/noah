@@ -8,15 +8,22 @@ RUN cd /build/ && \
     CGO_ENABLED=0 GOOS=linux go build -buildvcs=false -ldflags '-w -s' -o noah cmd/noah/main.go
 
 
-FROM airdb/alpine:latest
+FROM alpine:3.23
 
-WORKDIR /app/
+ENV AIRDB_RUNNING_CONTEXT=docker
 
-COPY --from=builder /build/noah /app/
-COPY --from=builder /build/configs/config.yaml /app/
+RUN apk add --no-cache --virtual .build-deps \
+    tzdata tar gzip \
+    curl netcat-openbsd \
+    bash bash-completion ca-certificates
+
+WORKDIR /opt/app
+
+COPY --from=builder /build/noah /opt/app//
+COPY --from=builder /build/configs/config.yaml /opt/app/
 
 EXPOSE 8080
 
 #ENTRYPOINT ["sleep", "3600"]
 #ENTRYPOINT ["/app/apigw"]
-CMD ["/app/noah", "run"]
+CMD ["/opt/app/noah", "run"]

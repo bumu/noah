@@ -20,6 +20,7 @@ services:
       - db:/var/lib/postgresql/data
 
   noah:
+    platform: linux/amd64
     container_name: noah
     restart: always
     image: "airdb/noah:latest"
