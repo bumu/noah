@@ -19,7 +19,14 @@ type registerDeps struct {
 func Register(deps registerDeps) {
 	deps.Mux.Route("/", func(r chi.Router) {
 		r.Get("/", deps.DefaultHandler)
+		r.Get("/help", deps.ListApisHandler)
 		r.Get("/apis", deps.ListApisHandler)
+		r.Get("/info", deps.EchoHandler)
+
+		// 兼容 IPv4 + IPv6 的路由参数（chi 支持复合正则）
+		r.Get("/{ip:([0-9.]+)|([0-9a-fA-F:]+)}/json", deps.IpJsonHandler)
+		r.Get("/json", deps.IpJsonHandler)
+
 		r.Get("/echo", deps.EchoHandler)
 		r.Post("/echo", deps.EchoHandler)
 		r.Get("/*", deps.NotFoundHandler)
