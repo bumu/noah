@@ -28,8 +28,9 @@ buf:
 	buf generate
 
 local: ## Run service locally 
-	go run main.go run -c config.local.yaml
+	go run cmd/noah/main.go run -c configs/config.local.yaml
 
+.PHONY: build
 build: ## Build or rebuild docker image
 	#docker compose build --no-cache
 	docker compose build ${SERVICE}
