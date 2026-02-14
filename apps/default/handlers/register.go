@@ -22,6 +22,9 @@ func Register(deps registerDeps) {
 		r.Get("/help", deps.ListApisHandler)
 		r.Get("/apis", deps.ListApisHandler)
 		r.Get("/info", deps.EchoHandler)
+		r.Post("/upload", deps.UploadHandler)
+		r.Get("/downloads/", deps.DownloadHandler)
+		r.Get("/dl/", deps.DownloadHandler)
 
 		// 兼容 IPv4 + IPv6 的路由参数（chi 支持复合正则）
 		r.Get("/{ip:([0-9.]+)|([0-9a-fA-F:]+)}/json", deps.IpJsonHandler)

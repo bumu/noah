@@ -2,7 +2,13 @@ FROM golang:1.26-alpine AS builder
 
 WORKDIR /build
 
+ADD go.* /build/
+
+RUN go mod download
+
 ADD ./ /build
+
+RUN ls -la /build/
 
 RUN cd /build/ && \
     CGO_ENABLED=0 GOOS=linux go build -buildvcs=false -ldflags '-w -s' -o noah cmd/noah/main.go

@@ -10,7 +10,8 @@ require (
 	github.com/go-chi/render v1.0.3
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/go-resty/resty/v2 v2.17.1
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.8
+	github.com/google/uuid v1.6.0
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.28.0
 	github.com/ipipdotnet/ipdb-go v1.3.3
 	github.com/king133134/sensfilter v0.3.1
 	github.com/prometheus/client_golang v1.23.2
