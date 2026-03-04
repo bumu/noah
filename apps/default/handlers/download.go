@@ -61,3 +61,4 @@ func (deps registerDeps) DownloadHandler(w http.ResponseWriter, r *http.Request)
 	}
 
 	fmt.Printf("[log] skill.md downloaded successfully\n")
+}
