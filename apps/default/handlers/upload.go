@@ -12,6 +12,7 @@ import (
 
 const baseUploadPath = "./uploads"
 
+// curl -F "file=@README.md" aid.run/upload
 func (deps registerDeps) UploadHandler(w http.ResponseWriter, r *http.Request) {
 	// 1. Only allow POST
 	if r.Method != http.MethodPost {

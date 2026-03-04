@@ -33,7 +33,8 @@ local: ## Run service locally
 .PHONY: build
 build: ## Build or rebuild docker image
 	#docker compose build --no-cache
-	docker compose build ${SERVICE}
+	#docker compose build ${SERVICE}
+	docker compose -f build/docker-compose.yaml build ${SERVICE}
 
 up:
 	docker compose up -d ${SERVICE} --force-recreate
