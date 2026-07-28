@@ -14,7 +14,7 @@ RUN cd /build/ && \
     CGO_ENABLED=0 GOOS=linux go build -buildvcs=false -ldflags '-w -s' -o noah cmd/noah/main.go
 
 
-FROM alpine:3.23
+FROM alpine:3.24
 
 ENV AIRDB_RUNNING_CONTEXT=docker
 
