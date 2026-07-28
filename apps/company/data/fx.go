@@ -10,6 +10,7 @@ func FxOptions() fx.Option {
 	return fx.Options(
 		fx.Provide(
 			repos.NewCompanyProfileRepo,
+			repos.NewCompanyUploadRepo,
 		),
 	)
 }

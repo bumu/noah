@@ -11,5 +11,6 @@ func Migrate(conn *gorm.DB) {
 		schema.CompnayProfile{},
 		schema.CompanySSICInfo{},
 		schema.CompanySSICCategory{},
+		schema.CompanyUpload{},
 	)
 }
