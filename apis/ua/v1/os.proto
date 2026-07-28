@@ -7,7 +7,7 @@ import "google/api/client.proto";
 import "google/api/field_behavior.proto";
 import "google/protobuf/any.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
-import "validate/validate.proto";
+import "buf/validate/validate.proto";
 
 option go_package = "noah/gen/go/ua/v1;uav1";
 option java_multiple_files = true;
@@ -32,7 +32,7 @@ service UASOSService {
 message UASOSRequest {
   string user_agent = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (validate.rules).string.min_len = 1
+    (buf.validate.field).string.min_len = 1
   ];
   map<string, google.protobuf.Any> payload = 2;
 

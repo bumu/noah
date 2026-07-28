@@ -6,6 +6,7 @@ import (
 	"noah/apps/company/data/schema"
 	companyv1 "noah/gen/go/company/v1"
 
+	"buf.build/go/protovalidate"
 	"github.com/go-chi/render"
 )
 
@@ -49,6 +50,11 @@ func (deps registerDeps) CreateCompanyProfile(w http.ResponseWriter, r *http.Req
 	if err != nil {
 		resp.Status = http.StatusBadRequest
 
+		render.JSON(w, r, &resp)
+		return
+	}
+	if err := protovalidate.Validate(&req); err != nil {
+		resp.Status = http.StatusBadRequest
 		render.JSON(w, r, &resp)
 		return
 	}

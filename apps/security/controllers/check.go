@@ -8,6 +8,7 @@ import (
 	"noah/apps/security/data/schema"
 	secv1 "noah/gen/go/security/v1"
 
+	"buf.build/go/protovalidate"
 	"github.com/go-chi/render"
 )
 
@@ -28,6 +29,10 @@ func (deps registerDeps) CheckSec(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.Write([]byte("invalid request body\n"))
 		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if err := protovalidate.Validate(&req); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 

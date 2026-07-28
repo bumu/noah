@@ -3,8 +3,7 @@ modules:
   - path: ./
     name: buf.build/airdb/noah
 deps:
-  - buf.build/einride/iam
-  - buf.build/envoyproxy/protoc-gen-validate
+  - buf.build/bufbuild/protovalidate
   - buf.build/googleapis/googleapis
   - buf.build/grpc-ecosystem/grpc-gateway
 lint:

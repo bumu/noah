@@ -8,6 +8,7 @@ import (
 	"noah/apps/infra/data/schema"
 	infrav1 "noah/gen/go/infra/v1"
 
+	"buf.build/go/protovalidate"
 	"github.com/go-chi/render"
 )
 
@@ -25,6 +26,10 @@ func (deps registerDeps) CreateInfraHostHeartbeat(w http.ResponseWriter, r *http
 		w.Write([]byte("invalid request body\n"))
 		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if err := protovalidate.Validate(&req); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
