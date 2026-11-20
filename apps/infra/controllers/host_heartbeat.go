@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"encoding/json"
+	"encoding/json/v2"
 	"log"
 	"net/http"
 
@@ -21,7 +21,7 @@ func (deps registerDeps) CreateInfraHostHeartbeat(w http.ResponseWriter, r *http
 
 	var req infrav1.HeartbeatRequest
 
-	err := json.NewDecoder(r.Body).Decode(&req)
+	err := json.UnmarshalRead(r.Body, &req)
 	if err != nil {
 		w.Write([]byte("invalid request body\n"))
 		log.Println(err)

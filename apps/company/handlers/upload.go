@@ -2,7 +2,8 @@ package handlers
 
 import (
 	"bytes"
-	"encoding/json"
+	"encoding/json/jsontext"
+	"encoding/json/v2"
 	"net/http"
 
 	"noah/apps/company/data/schema"
@@ -13,7 +14,7 @@ import (
 const sgBusinessSource = "sg-business"
 
 type companyUploadRequest struct {
-	Data json.RawMessage `json:"data"`
+	Data jsontext.Value `json:"data"`
 }
 
 type companyUploadResponse struct {
@@ -23,8 +24,7 @@ type companyUploadResponse struct {
 
 func (deps registerDeps) UploadSGBusiness(w http.ResponseWriter, r *http.Request) {
 	var req companyUploadRequest
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&req); err != nil || len(req.Data) == 0 || bytes.Equal(req.Data, []byte("null")) {
+	if err := json.UnmarshalRead(r.Body, &req); err != nil || len(req.Data) == 0 || bytes.Equal(req.Data, []byte("null")) {
 		http.Error(w, "data must be a non-null JSON value", http.StatusBadRequest)
 		return
 	}
@@ -40,8 +40,9 @@ func (deps registerDeps) UploadSGBusiness(w http.ResponseWriter, r *http.Request
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	_ = json.NewEncoder(w).Encode(companyUploadResponse{
+	_ = json.MarshalWrite(w, companyUploadResponse{
 		ID:     upload.ID,
 		Source: upload.Source,
 	})
+	_, _ = w.Write([]byte("\n"))
 }

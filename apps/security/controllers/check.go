@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"encoding/json"
+	"encoding/json/v2"
 	"fmt"
 	"net/http"
 
@@ -25,7 +25,7 @@ func (deps registerDeps) CheckSec(w http.ResponseWriter, r *http.Request) {
 
 	var req secv1.SecCheckRequest
 
-	err := json.NewDecoder(r.Body).Decode(&req)
+	err := json.UnmarshalRead(r.Body, &req)
 	if err != nil {
 		w.Write([]byte("invalid request body\n"))
 		w.WriteHeader(http.StatusBadRequest)

@@ -4,6 +4,7 @@ WORKDIR /build
 
 ADD go.* /build/
 
+RUN go mod tidy
 RUN go mod download
 
 ADD ./ /build

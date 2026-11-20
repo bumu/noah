@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"encoding/json"
+	"encoding/json/v2"
 	"net/http"
 	"noah/apps/company/data/schema"
 	companyv1 "noah/gen/go/company/v1"
@@ -46,7 +46,7 @@ func (deps registerDeps) CreateCompanyProfile(w http.ResponseWriter, r *http.Req
 	var req companyv1.CreateCompanyProfileRequest
 	var resp companyv1.CreateCompanyProfileResponse
 
-	err := json.NewDecoder(r.Body).Decode(&req)
+	err := json.UnmarshalRead(r.Body, &req)
 	if err != nil {
 		resp.Status = http.StatusBadRequest
 
