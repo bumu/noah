@@ -9,10 +9,11 @@ import (
 var CfgFile string
 
 type Config struct {
-	Addr        string `mapstructure:"addr" default:":8080"`
-	RedisURL    string `mapstructure:"redis_url"`
-	DatabaseURL string `mapstructure:"database_url"`
-	Ipdb        Ipdb   `mapstructure:"ipdb"`
+	GitHubWebhookSecret string `mapstructure:"github_webhook_secret"`
+	Addr                string `mapstructure:"addr" default:":8080"`
+	RedisURL            string `mapstructure:"redis_url"`
+	DatabaseURL         string `mapstructure:"database_url"`
+	Ipdb                Ipdb   `mapstructure:"ipdb"`
 }
 
 type Ipdb struct {
@@ -42,6 +43,5 @@ func Init() {
 	}
 
 	log.Println("Using config file:", viper.ConfigFileUsed())
-	log.Println("Read config from file: ", GlobalConfig.DatabaseURL)
 	log.Println("Read config from file: ", GlobalConfig.Ipdb.Ipv4)
 }

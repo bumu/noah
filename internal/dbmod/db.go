@@ -12,18 +12,26 @@ import (
 )
 
 func NewConn() (*gorm.DB, error) {
-	dsn, err := dburl.Parse(configkit.GlobalConfig.DatabaseURL)
+	dialector, err := databaseDialector(configkit.GlobalConfig.DatabaseURL)
+	if err != nil {
+		return nil, err
+	}
+	return gorm.Open(dialector, &gorm.Config{})
+}
+
+func databaseDialector(databaseURL string) (gorm.Dialector, error) {
+	dsn, err := dburl.Parse(databaseURL)
 	if err != nil {
 		return nil, err
 	}
 
-	switch dsn.Driver {
+	switch dsn.Dialect {
 	case "postgres":
-		return gorm.Open(postgres.Open(dsn.DSN), &gorm.Config{})
+		return postgres.Open(dsn.DSN), nil
 	case "mysql":
-		return gorm.Open(mysql.Open(dsn.DSN), &gorm.Config{})
+		return mysql.Open(dsn.DSN), nil
 	default:
-		return nil, fmt.Errorf("unknown driver: %s", dsn.Driver)
+		return nil, fmt.Errorf("unsupported database dialect: %s", dsn.Dialect)
 	}
 
 }

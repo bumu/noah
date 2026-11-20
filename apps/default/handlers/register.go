@@ -19,6 +19,9 @@ type registerDeps struct {
 func Register(deps registerDeps) {
 	deps.Mux.Route("/", func(r chi.Router) {
 		r.Get("/", deps.DefaultHandler)
+		r.Get("/healthz", func(w http.ResponseWriter, r *http.Request) {
+			_, _ = w.Write([]byte("ok\n"))
+		})
 		r.Get("/help", deps.ListApisHandler)
 		r.Get("/apis", deps.ListApisHandler)
 		r.Get("/info", deps.EchoHandler)
