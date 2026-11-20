@@ -28,6 +28,7 @@ WORKDIR /opt/app
 
 COPY --from=builder /build/noah /opt/app//
 COPY --from=builder /build/configs/config.exmaple.yaml /opt/app/
+COPY --from=builder /build/configs/config.exmaple.yaml /opt/app/config.yaml
 
 EXPOSE 8080
 
