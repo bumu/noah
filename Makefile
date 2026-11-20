@@ -25,7 +25,7 @@ init:  ## Init project
 
 .PHONY: buf
 buf:
-	buf generate
+	cd apis && buf generate
 
 local: ## Run service locally 
 	go run cmd/noah/main.go run -c configs/config.local.yaml
