@@ -1,4 +1,4 @@
-FROM golang:1.26-alpine AS builder
+FROM golang:1.27-alpine AS builder
 
 WORKDIR /build
 
@@ -26,7 +26,7 @@ RUN apk add --no-cache --virtual .build-deps \
 WORKDIR /opt/app
 
 COPY --from=builder /build/noah /opt/app//
-COPY --from=builder /build/configs/config.yaml /opt/app/
+COPY --from=builder /build/configs/config.exmaple.yaml /opt/app/
 
 EXPOSE 8080
 

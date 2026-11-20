@@ -21,6 +21,7 @@ init:  ## Init project
 	go install github.com/PaulXu-cn/go-mod-graph-chart/gmchart@latest
 	go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28.1
 	go install github.com/lyft/protoc-gen-star/protoc-gen-debug@latest
+	go get github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options
 
 .PHONY: buf
 buf:
