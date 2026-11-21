@@ -1,0 +1,84 @@
+syntax = "proto3";
+
+package user.v1;
+
+import "common/v1/http.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "noah/gen/go/user/v1;userv1";
+
+// User profiles and their public SSH keys.
+service UserProfileService {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {description: "User profiles and their public SSH keys."};
+
+  // Get user placeholder.
+  rpc GetUser(google.protobuf.Empty) returns (noah.common.v1.TextResponse) {
+    option (google.api.http) = {
+      get: "/v1/user"
+      response_body: "data"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get user placeholder"
+      description: "Currently returns a fixed string. No user lookup or ID parameter is implemented."
+      produces: "text/plain"
+      responses: {
+        key: "200"
+        value: {
+          description: "Successful response from the current HTTP handler."
+          examples: {
+            key: "text/plain"
+            value: "get user"
+          }
+        }
+      }
+    };
+  }
+
+  // List users.
+  rpc ListUsers(google.protobuf.Empty) returns (noah.common.v1.ListResponse) {
+    option (google.api.http) = {
+      get: "/v1/user/list"
+      response_body: "data"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List users"
+      description: "Returns a bare array, fixed limit=10 and offset=0; query pagination is not implemented. JSON uses Go field names, including Password; the example is synthetic."
+      produces: "application/json"
+      responses: {
+        key: "200"
+        value: {
+          description: "Successful response from the current HTTP handler."
+          examples: {
+            key: "application/json"
+            value: "[{\"ID\": 1, \"CreatedAt\": \"2026-11-21T08:00:00Z\", \"UpdatedAt\": \"2026-11-21T08:00:00Z\", \"DeletedAt\": null, \"LoginName\": \"example-user\", \"Password\": \"<stored-value>\"}]"
+          }
+        }
+      }
+    };
+  }
+
+  // List GitHub SSH public keys.
+  rpc ListHostKeys(google.protobuf.Empty) returns (noah.common.v1.TextResponse) {
+    option (google.api.http) = {
+      get: "/v1/user/keys"
+      response_body: "data"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List GitHub SSH public keys"
+      description: "Looks up the first 50 local users and fetches GitHub public keys for their LoginName. Returns concatenated text. No query parameters."
+      produces: "text/plain"
+      responses: {
+        key: "200"
+        value: {
+          description: "Successful response from the current HTTP handler."
+          examples: {
+            key: "text/plain"
+            value: "ssh-ed25519 <example-public-key> example-user"
+          }
+        }
+      }
+    };
+  }
+}

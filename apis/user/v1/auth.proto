@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package user.v1;
+
+import "common/v1/http.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "noah/gen/go/user/v1;userv1";
+
+// User service greeting and OAuth callback diagnostics.
+service UserAuthService {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {description: "User service greeting and OAuth callback diagnostics."};
+
+  // Get user service greeting.
+  rpc Welcome(google.protobuf.Empty) returns (noah.common.v1.TextResponse) {
+    option (google.api.http) = {
+      get: "/apis/users"
+      response_body: "data"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get user service greeting"
+      description: "Returns a fixed greeting."
+      produces: "text/plain"
+      responses: {
+        key: "200"
+        value: {
+          description: "Successful response from the current HTTP handler."
+          examples: {
+            key: "text/plain"
+            value: "welcome to user service\n"
+          }
+        }
+      }
+    };
+  }
+
+  // Inspect OAuth callback metadata.
+  rpc OAuthCallback(OAuthCallbackRequest) returns (noah.common.v1.TextResponse) {
+    option (google.api.http) = {
+      get: "/apis/users/oauth2/v1/callback"
+      response_body: "data"
+      additional_bindings: {
+        get: "/apis/oauth2/v1/callback"
+        response_body: "data"
+      }
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Inspect OAuth callback metadata"
+      description: "Diagnostic placeholder only: echoes code, state and forwarded identity headers followed by a JSON header map. No token exchange or login is performed; output is mixed text rather than a JSON document."
+      produces: "text/plain"
+      responses: {
+        key: "200"
+        value: {
+          description: "Successful response from the current HTTP handler."
+          examples: {
+            key: "text/plain"
+            value: "code: example-code, state: example-state, user: , email: , groups: {\"Accept\":[\"*/*\"]}\n"
+          }
+        }
+      }
+    };
+  }
+}
+
+message OAuthCallbackRequest {
+  // Authorization code, echoed without token exchange.
+  string code = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {example: "\"example-code\""}];
+  // Caller state, echoed without validation.
+  string state = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {example: "\"example-state\""}];
+}

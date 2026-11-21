@@ -1,0 +1,262 @@
+syntax = "proto3";
+
+package system.v1;
+
+import "common/v1/http.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "noah/gen/go/system/v1;systemv1";
+
+// Service information, health, diagnostics and file downloads.
+service SystemService {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {description: "Service information, health, diagnostics and file downloads."};
+
+  // Get client IP as text.
+  rpc GetClientIp(google.protobuf.Empty) returns (noah.common.v1.TextResponse) {
+    option (google.api.http) = {
+      get: "/"
+      response_body: "data"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get client IP as text"
+      description: "Uses remote address, X-Real-Ip, then Fly-Client-IP. X-Debug adds diagnostic headers to the text output."
+      produces: "text/plain"
+      responses: {
+        key: "200"
+        value: {
+          description: "Successful response from the current HTTP handler."
+          examples: {
+            key: "text/plain"
+            value: "203.0.113.10\n"
+          }
+        }
+      }
+    };
+  }
+
+  // Check service health.
+  rpc Health(google.protobuf.Empty) returns (noah.common.v1.TextResponse) {
+    option (google.api.http) = {
+      get: "/healthz"
+      response_body: "data"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Check service health"
+      description: "Returns a fixed health response."
+      produces: "text/plain"
+      responses: {
+        key: "200"
+        value: {
+          description: "Successful response from the current HTTP handler."
+          examples: {
+            key: "text/plain"
+            value: "ok\n"
+          }
+        }
+      }
+    };
+  }
+
+  // List configured applications.
+  rpc Help(google.protobuf.Empty) returns (noah.common.v1.TextResponse) {
+    option (google.api.http) = {
+      get: "/help"
+      response_body: "data"
+      additional_bindings: {
+        get: "/apis"
+        response_body: "data"
+      }
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List configured applications"
+      description: "Returns the service greeting and configured app names as text; this is not a machine-readable route inventory."
+      produces: "text/plain"
+      responses: {
+        key: "200"
+        value: {
+          description: "Successful response from the current HTTP handler."
+          examples: {
+            key: "text/plain"
+            value: "welcome to noah service\nVersion /v1\n\n\napps list: \n  - apigw\n"
+          }
+        }
+      }
+    };
+  }
+
+  // Echo request metadata.
+  rpc Echo(google.protobuf.Empty) returns (noah.common.v1.ObjectResponse) {
+    option (google.api.http) = {
+      get: "/echo"
+      response_body: "data"
+      additional_bindings: {
+        get: "/info"
+        response_body: "data"
+      }
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Echo request metadata"
+      description: "Returns headers and query args as maps of string arrays, plus body, method and URL. Arbitrary query arguments are echoed, not validated."
+      produces: "application/json"
+      responses: {
+        key: "200"
+        value: {
+          description: "Successful response from the current HTTP handler."
+          examples: {
+            key: "application/json"
+            value: "{\"headers\": {\"Accept\": [\"application/json\"]}, \"body\": \"\", \"method\": \"GET\", \"url\": \"/echo?hello=world\", \"args\": {\"hello\": [\"world\"]}}"
+          }
+        }
+      }
+    };
+  }
+
+  // Get client IP as JSON.
+  rpc IpJson(google.protobuf.Empty) returns (noah.common.v1.ObjectResponse) {
+    option (google.api.http) = {
+      get: "/json"
+      response_body: "data"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get client IP as JSON"
+      description: "Returns client_ip and user_agent. No geolocation lookup is currently performed."
+      produces: "application/json"
+      responses: {
+        key: "200"
+        value: {
+          description: "Successful response from the current HTTP handler."
+          examples: {
+            key: "application/json"
+            value: "{\"client_ip\": \"203.0.113.10\", \"user_agent\": \"curl/example\"}"
+          }
+        }
+      }
+    };
+  }
+
+  // Echo a supplied IP address.
+  rpc SearchIpJson(IpLookupRequest) returns (noah.common.v1.ObjectResponse) {
+    option (google.api.http) = {
+      get: "/{ip}/json"
+      response_body: "data"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Echo a supplied IP address"
+      description: "Path matches the IPv4/IPv6 character pattern used by chi. Returns the supplied address as search_ip; it does not perform geolocation or validate the address fully."
+      produces: "application/json"
+      responses: {
+        key: "200"
+        value: {
+          description: "Successful response from the current HTTP handler."
+          examples: {
+            key: "application/json"
+            value: "{\"client_ip\": \"203.0.113.10\", \"search_ip\": \"198.51.100.1\", \"user_agent\": \"curl/example\"}"
+          }
+        }
+      }
+    };
+  }
+
+  // Download a file.
+  rpc Download(DownloadRequest) returns (noah.common.v1.TextResponse) {
+    option (google.api.http) = {
+      get: "/downloads/{filename=**}"
+      response_body: "data"
+      additional_bindings: {
+        get: "/dl/{filename=**}"
+        response_body: "data"
+      }
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Download a file"
+      description: "Streams a file beneath ./downloads. The /dl alias currently has a prefix parsing bug for longer paths; prefer /downloads. Returns plain-text errors for invalid paths, missing files or read failures."
+      produces: "application/octet-stream"
+      responses: {
+        key: "200"
+        value: {
+          description: "Successful response from the current HTTP handler."
+          schema: {
+            json_schema: {
+              type: STRING
+              format: "binary"
+            }
+          }
+        }
+      }
+      responses: {
+        key: "400"
+        value: {
+          description: "Missing or invalid file path."
+          schema: {
+            json_schema: {type: STRING}
+          }
+        }
+      }
+      responses: {
+        key: "403"
+        value: {
+          description: "Access denied."
+          schema: {
+            json_schema: {type: STRING}
+          }
+        }
+      }
+      responses: {
+        key: "404"
+        value: {
+          description: "File not found."
+          schema: {
+            json_schema: {type: STRING}
+          }
+        }
+      }
+      responses: {
+        key: "500"
+        value: {
+          description: "File read failure."
+          schema: {
+            json_schema: {type: STRING}
+          }
+        }
+      }
+    };
+  }
+
+  // Check internal metrics placeholder.
+  rpc InternalMetrics(google.protobuf.Empty) returns (noah.common.v1.TextResponse) {
+    option (google.api.http) = {
+      get: "/internal/metrics"
+      response_body: "data"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Check internal metrics placeholder"
+      description: "Currently returns ok, not Prometheus metrics."
+      produces: "text/plain"
+      responses: {
+        key: "200"
+        value: {
+          description: "Successful response from the current HTTP handler."
+          examples: {
+            key: "text/plain"
+            value: "ok\n"
+          }
+        }
+      }
+    };
+  }
+}
+
+message IpLookupRequest {
+  // IPv4 or IPv6 text matching the router character pattern.
+  string ip = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    example: "\"198.51.100.1\""
+    pattern: "^([0-9.]+|[0-9a-fA-F:]+)$"
+  }];
+}
+// File path relative to the download directory.
+message DownloadRequest {
+  // A file that already exists under ./downloads.
+  string filename = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {example: "\"example.txt\""}];
+}

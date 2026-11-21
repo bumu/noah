@@ -2,12 +2,14 @@ syntax = "proto3";
 
 package sec.v1;
 
+import "buf/validate/validate.proto";
+import "common/v1/http.proto";
 import "google/api/annotations.proto";
 import "google/api/client.proto";
 import "google/api/field_behavior.proto";
 import "google/protobuf/any.proto";
+import "google/protobuf/empty.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
-import "buf/validate/validate.proto";
 
 option go_package = "noah/gen/go/sec/v1;secv1";
 option java_multiple_files = true;
@@ -16,41 +18,177 @@ option java_package = "com.airdb.sec.v1";
 
 service UASService {
   option (google.api.default_host) = "apigw.airdb.com";
-  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {description: "Security Service - WAF"};
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {description: "Security request recording and health checks."};
 
-  // UASService
+  // Record a security check request.
   rpc UASService(SecCheckRequest) returns (SecCheckResponse) {
     option (google.api.http) = {
-      post: "/apis/v1/sgw/sec/check",
-      body: "payload"
+      post: "/apis/v1/sgw/sec/check"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      operation_id: "security_UASService"
+      summary: "Record a security check request"
+      description: "Stores request metadata for security analysis. user_agent is required. The current handler records the request and returns plain text; it does not return an allow/block decision."
+      produces: "text/plain"
+      responses: {
+        key: "200"
+        value: {
+          description: "Record stored successfully."
+          schema: {
+            json_schema: {type: STRING}
+          }
+          examples: {
+            key: "text/plain"
+            value: "record success"
+          }
+        }
+      }
+    };
+
+    option (google.api.method_signature) = "user_agent";
+  }
+
+  // Check security service health.
+  rpc Health(google.protobuf.Empty) returns (noah.common.v1.TextResponse) {
+    option (google.api.http) = {
+      get: "/apis/v1/sgw/sec/check"
       response_body: "data"
     };
-    option (google.api.method_signature) = "user_agent";
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Check security service health"
+      description: "GET is a health check only. POST on the same path records security metadata."
+      produces: "text/plain"
+      responses: {
+        key: "200"
+        value: {
+          description: "Successful response from the current HTTP handler."
+          examples: {
+            key: "text/plain"
+            value: "ok\n"
+          }
+        }
+      }
+    };
+  }
+
+  // Check internal security health.
+  rpc InternalHealth(google.protobuf.Empty) returns (noah.common.v1.TextResponse) {
+    option (google.api.http) = {
+      get: "/internal/security/check"
+      response_body: "data"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Check internal security health"
+      description: "Internal service health endpoint."
+      produces: "text/plain"
+      responses: {
+        key: "200"
+        value: {
+          description: "Successful response from the current HTTP handler."
+          examples: {
+            key: "text/plain"
+            value: "ok\n"
+          }
+        }
+      }
+    };
   }
 }
 
+// JSON body accepted by the direct HTTP handler.
 message SecCheckRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {example: "{\"user_agent\": \"Mozilla/5.0 (X11; Linux x86_64)\", \"client_ip\": \"203.0.113.10\", \"method\": \"GET\", \"url\": \"https://example.com/login\", \"protocol\": \"HTTP/2\", \"request_id\": \"req-example-001\"}"};
+  // HTTP User-Agent header value.
   string user_agent = 1 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "HTTP User-Agent header value."
+      example: "\"Mozilla/5.0 (X11; Linux x86_64)\""
+    },
     (google.api.field_behavior) = REQUIRED,
     (buf.validate.field).string.min_len = 1
   ];
-  map<string, google.protobuf.Any> payload = 2;
-  string fingerprint_ja3 = 3;
-  string fingerprint_h2 = 4;
-  string client_ip = 5;
-  string method = 6;
-  string url = 7;
-  string req_headers = 8;
-  string req_body = 9;
-  string protocol = 10;
-  string request_id = 11;
+  // Legacy extension payload. Normal HTTP requests send business fields directly in the JSON body; omit this field.
+  map<string, google.protobuf.Any> payload = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Legacy extension payload. Normal HTTP requests send business fields directly in the JSON body; omit this field."
+    example: "{}"
+  }];
+  // TLS JA3 fingerprint.
+  string fingerprint_ja3 = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "TLS JA3 fingerprint."
+    example: "\"771,4865-4866,0-11-10,29-23,0\""
+  }];
+  // HTTP/2 fingerprint as text.
+  string fingerprint_h2 = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "HTTP/2 fingerprint as text."
+    example: "\"1:65536;2:0;4:6291456;6:262144\""
+  }];
+  // Client IP address.
+  string client_ip = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Client IP address."
+    example: "\"203.0.113.10\""
+  }];
+  // Original HTTP request method.
+  string method = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Original HTTP request method."
+    example: "\"GET\""
+  }];
+  // Original request URL.
+  string url = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Original request URL."
+    example: "\"https://example.com/login\""
+  }];
+  // Original request headers serialized as text.
+  string req_headers = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Original request headers serialized as text."
+    example: "\"Accept: application/json\""
+  }];
+  // Original request body as text.
+  string req_body = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Original request body as text."
+    example: "\"\""
+  }];
+  // Original HTTP protocol version.
+  string protocol = 10 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Original HTTP protocol version."
+    example: "\"HTTP/2\""
+  }];
+  // Caller supplied request correlation ID.
+  string request_id = 11 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Caller supplied request correlation ID."
+    example: "\"req-example-001\""
+  }];
 }
 
 message SecCheckResponse {
-  google.protobuf.Any data = 4;
-  string request_id = 1;
-  int32 action = 2;
-  string err_msg = 3;
-  string resp_body = 5;
-  string resp_headers = 6;
+  // Legacy response extension; current direct HTTP handlers do not populate this field.
+  google.protobuf.Any data = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Legacy response extension; current direct HTTP handlers do not populate this field."
+    example: "{}"
+  }];
+  // Caller supplied request correlation ID.
+  string request_id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Caller supplied request correlation ID."
+    example: "\"req-example-001\""
+  }];
+  // Action to record; security response action codes are not currently implemented.
+  int32 action = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Action to record; security response action codes are not currently implemented."
+    example: "0"
+  }];
+  // Error details when the operation fails.
+  string err_msg = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Error details when the operation fails."
+    example: "\"\""
+  }];
+  // Response body proposed by a future security engine.
+  string resp_body = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Response body proposed by a future security engine."
+    example: "\"\""
+  }];
+  // Response headers proposed by a future security engine.
+  string resp_headers = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Response headers proposed by a future security engine."
+    example: "\"\""
+  }];
 }

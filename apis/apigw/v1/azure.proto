@@ -2,43 +2,78 @@ syntax = "proto3";
 
 package apigw.v1;
 
+import "buf/validate/validate.proto";
 import "google/api/annotations.proto";
 import "google/api/client.proto";
 import "google/api/field_behavior.proto";
 import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
-import "buf/validate/validate.proto";
 
 option go_package = "noah/gen/go/apigw/v1;systemv1";
 option java_multiple_files = true;
 option java_outer_classname = "AzureServiceProto";
 option java_package = "com.airdb.apigw.v1";
+// Shared metadata for the merged Swagger document. Host is intentionally omitted
+// so Swagger UI can use its serving origin or a caller-configured API host.
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Noah HTTP API"
+    version: "v1"
+    description: "Noah API contracts. Non-deprecated operations reflect the direct HTTP handlers. Deprecated operations are legacy contracts without registered routes. Request JSON uses snake_case fields; GET response casing follows each direct handler and is shown in operation examples."
+  }
+  consumes: "application/json"
+  produces: "application/json"
+};
 
 service AzureService {
   option (google.api.default_host) = "apigw.airdb.com";
-  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {description: "OpenAI Service -- which used to interacitve with openai."};
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {description: "Proxy an Azure OpenAI request"};
 
-  // AzureProxy
+  // Proxy an Azure OpenAI request.
   rpc AzureProxy(AzureProxyRequest) returns (AzureProxyResponse) {
     option (google.api.http) = {
       post: "/v1/azure/{name=*}"
       body: "payload"
       response_body: "data"
     };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      operation_id: "apigw_AzureProxy"
+      summary: "Proxy an Azure OpenAI request"
+      description: "Contract only: no Azure HTTP handler is registered in Noah. Configure an Azure upstream before using this operation. This operation is marked deprecated to distinguish it from implemented HTTP endpoints."
+      deprecated: true
+      responses: {
+        key: "200"
+        value: {description: "Request processed; see the operation description for current handler behavior."}
+      }
+    };
+
     option (google.api.method_signature) = "name";
   }
 }
 
 message AzureProxyRequest {
-  // The uri of the openai.
+  // Resource name or upstream operation path; see the operation description.
   string name = 1 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "Resource name or operation name; see the operation description."
+      example: "\"chat\""
+    },
     (google.api.field_behavior) = REQUIRED,
     (buf.validate.field).string.min_len = 1
   ];
 
-  map<string, google.protobuf.Any> payload = 2;
+  // JSON request forwarded verbatim to the upstream; no protobuf Any @type wrapper is required.
+  google.protobuf.Struct payload = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "JSON request forwarded verbatim to the upstream; no protobuf Any @type wrapper is required."
+    example: "{\"model\": \"your-deployment-or-model\", \"messages\": [{\"role\": \"user\", \"content\": \"Hello\"}], \"stream\": false}"
+  }];
 }
 
 message AzureProxyResponse {
-  google.protobuf.Any data = 4;
+  // Legacy response extension; current direct HTTP handlers do not populate this field.
+  google.protobuf.Any data = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Legacy response extension; current direct HTTP handlers do not populate this field."
+    example: "{}"
+  }];
 }

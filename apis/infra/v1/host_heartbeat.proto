@@ -2,13 +2,13 @@ syntax = "proto3";
 
 package infra.v1;
 
+import "buf/validate/validate.proto";
 import "google/api/annotations.proto";
 import "google/api/client.proto";
 import "google/api/field_behavior.proto";
 import "google/protobuf/any.proto";
 import "google/protobuf/timestamp.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
-import "buf/validate/validate.proto";
 
 option go_package = "noah/gen/go/infra/v1;infrav1";
 option java_multiple_files = true;
@@ -16,45 +16,105 @@ option java_outer_classname = "InfraProto";
 option java_package = "com.airdb.infra.v1";
 
 service HostHeartbeatService {
-    option (google.api.default_host) = "apigw.airdb.com";
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
-        description: "Host Heartbeat Service - Monitor host status and health"
+  option (google.api.default_host) = "apigw.airdb.com";
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {description: "Report a host heartbeat"};
+
+  // ReportHeartbeat allows hosts to report their current status
+  rpc ReportHeartbeat(HeartbeatRequest) returns (HeartbeatResponse) {
+    option (google.api.http) = {
+      post: "/apis/infra/v1/host/heartbeat"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      operation_id: "infra_ReportHeartbeat"
+      summary: "Report a host heartbeat"
+      description: "Stores host inventory from a JSON object. ip is required. Success currently returns an empty JSON object; received_at and config_updates are not populated."
+      responses: {
+        key: "200"
+        value: {description: "Request processed; see the operation description for current handler behavior."}
+      }
     };
 
-    // ReportHeartbeat allows hosts to report their current status
-    rpc ReportHeartbeat(HeartbeatRequest) returns (HeartbeatResponse) {
-        option (google.api.http) = {
-            post: "/infra/v1/host/heartbeat"
-            body: "payload"
-            response_body: "data"
-        };
-        option (google.api.method_signature) = "hostname";
-    }
+    option (google.api.method_signature) = "hostname";
+  }
 }
 
+// JSON body accepted by the direct HTTP handler.
 message HeartbeatRequest {
-    string ip = 1 [
-        (google.api.field_behavior) = REQUIRED,
-        (buf.validate.field).string.min_len = 1
-    ];
-    string hostname = 2;
-    map<string, google.protobuf.Any> payload = 3;
-    
-    string arch = 4;
-    string os = 5;
-    string kernel = 6;
-    string system_info = 7;
-    string environment = 8;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {example: "{\"ip\": \"203.0.113.10\", \"hostname\": \"web-01\", \"arch\": \"arm64\", \"os\": \"linux\", \"kernel\": \"6.8.0\", \"system_info\": \"Ubuntu 24.04 LTS\", \"environment\": \"production\"}"};
+  // IP address in textual form.
+  string ip = 1 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "IP address in textual form."
+      example: "\"203.0.113.10\""
+    },
+    (google.api.field_behavior) = REQUIRED,
+    (buf.validate.field).string.min_len = 1
+  ];
+  // Host name.
+  string hostname = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Host name."
+    example: "\"web-01\""
+  }];
+  // Legacy extension payload. Normal HTTP requests send business fields directly in the JSON body; omit this field.
+  map<string, google.protobuf.Any> payload = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Legacy extension payload. Normal HTTP requests send business fields directly in the JSON body; omit this field."
+    example: "{}"
+  }];
+
+  // CPU architecture.
+  string arch = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "CPU architecture."
+    example: "\"arm64\""
+  }];
+  // Operating system name.
+  string os = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Operating system name."
+    example: "\"linux\""
+  }];
+  // Kernel release.
+  string kernel = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Kernel release."
+    example: "\"6.8.0\""
+  }];
+  // Additional system inventory as text.
+  string system_info = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Additional system inventory as text."
+    example: "\"Ubuntu 24.04 LTS\""
+  }];
+  // Deployment environment.
+  string environment = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Deployment environment."
+    example: "\"production\""
+  }];
 }
 
 message HeartbeatResponse {
-    google.protobuf.Any data = 1;
-    int32 status = 2;
-    string err_msg = 3;
-    
-    // Server-side timestamp when heartbeat was received
-    google.protobuf.Timestamp received_at = 4;
-    
-    // Optional configuration updates for the host
-    map<string, string> config_updates = 5;
-} 
+  // Legacy response extension; current direct HTTP handlers do not populate this field.
+  google.protobuf.Any data = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Legacy response extension; current direct HTTP handlers do not populate this field."
+    example: "{}"
+  }];
+  // Application status; its meaning depends on the operation.
+  int32 status = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Application status; its meaning depends on the operation."
+    example: "0"
+  }];
+  // Error details when the operation fails.
+  string err_msg = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Error details when the operation fails."
+    example: "\"\""
+  }];
+
+  // Server-side timestamp when heartbeat was received
+  google.protobuf.Timestamp received_at = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Server receipt timestamp; not currently populated by the HTTP handler."
+    example: "\"2026-11-21T08:00:00Z\""
+  }];
+
+  // Optional configuration updates for the host
+  map<string, string> config_updates = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Optional host configuration updates; not currently populated."
+    example: "{\"log_level\": \"info\"}"
+  }];
+}

@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package infra.v1;
 
+import "common/v1/http.proto";
 import "google/api/annotations.proto";
 import "google/api/client.proto";
-import "google/api/field_behavior.proto";
 import "google/protobuf/any.proto";
+import "google/protobuf/empty.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
-import "buf/validate/validate.proto";
 
 option go_package = "noah/gen/go/infra/v1;infrav1";
 option java_multiple_files = true;
@@ -15,37 +15,170 @@ option java_outer_classname = "InfraProto";
 option java_package = "com.airdb.infra.v1";
 
 service InfraLinuxService {
-    option (google.api.default_host) = "apigw.airdb.com";
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {description: "IP Service - IP location, usage, isp info etc"};
-  
-    // InfraLinuxService
-    rpc InfraLinuxService(InfraLinuxRequest) returns (InfraLinuxResponse) {
-      option (google.api.http) = {
-        post: "/v1/infra/linux/{hostname=*}"
-        body: "payload"
+  option (google.api.default_host) = "apigw.airdb.com";
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {description: "Linux host visit records and statistics."};
+
+  // InfraLinuxService
+  rpc InfraLinuxService(InfraLinuxRequest) returns (InfraLinuxResponse) {
+    option (google.api.http) = {
+      post: "/apis/infra/v1/linux/{hostname=*}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      operation_id: "infra_InfraLinuxService"
+      summary: "Record a Linux host visit"
+      description: "Records hostname from the path and action from the JSON body. The source IP is read from Fly-Client-IP. The legacy name field is not used by this HTTP handler."
+      produces: "text/plain"
+      responses: {
+        key: "200"
+        value: {
+          description: "Record stored successfully."
+          schema: {
+            json_schema: {type: STRING}
+          }
+          examples: {
+            key: "text/plain"
+            value: "record visit success"
+          }
+        }
+      }
+    };
+
+    option (google.api.method_signature) = "hostname";
+  }
+
+  // Record a host visit via GET.
+  rpc RecordVisit(RecordVisitRequest) returns (noah.common.v1.TextResponse) {
+    option (google.api.http) = {
+      get: "/apis/infra/v1/linux/{hostname}"
+      response_body: "data"
+      additional_bindings: {
+        get: "/apis/infra/v1/motd/{hostname}"
         response_body: "data"
-      };
-      option (google.api.method_signature) = "hostname";
-    }
+      }
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Record a host visit via GET"
+      description: "This GET writes a visit record. hostname comes from the path, action from the query, and source IP from Fly-Client-IP. Use POST where possible; avoid automatic prefetching."
+      produces: "text/plain"
+      responses: {
+        key: "200"
+        value: {
+          description: "Successful response from the current HTTP handler."
+          examples: {
+            key: "text/plain"
+            value: "record visit success"
+          }
+        }
+      }
+    };
   }
-  
-  message InfraLinuxRequest {
-    string name = 1 [
-      (google.api.field_behavior) = REQUIRED,
-      (buf.validate.field).string.min_len = 1
-    ];
-    map<string, google.protobuf.Any> payload = 2;
-  
-    string ip = 3;
-    string hostname = 4;
-    string action = 5;
-    // string action = 5 [name = "cmd", json_name = "cmd"];
-    // string action = 5 [ (google.protobuf.field_name) = "cmd"];
+
+  // Get Linux visit counts.
+  rpc GetVisitCounts(google.protobuf.Empty) returns (noah.common.v1.TextResponse) {
+    option (google.api.http) = {
+      get: "/apis/infra/v1/linux/count"
+      response_body: "data"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get Linux visit counts"
+      description: "Returns login, logout and command counts as a formatted text string."
+      produces: "text/plain"
+      responses: {
+        key: "200"
+        value: {
+          description: "Successful response from the current HTTP handler."
+          examples: {
+            key: "text/plain"
+            value: "login count: 10, logout count: 5, cmd count: 20"
+          }
+        }
+      }
+    };
   }
-  
-  message InfraLinuxResponse {
-    google.protobuf.Any data = 4;
-    string status = 1;
-    string err_msg = 2;
+
+  // Get infrastructure service greeting.
+  rpc Welcome(google.protobuf.Empty) returns (noah.common.v1.TextResponse) {
+    option (google.api.http) = {
+      get: "/apis/infra"
+      response_body: "data"
+      additional_bindings: {
+        get: "/apis/infra/v1"
+        response_body: "data"
+      }
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get infrastructure service greeting"
+      description: "Returns a fixed greeting."
+      produces: "text/plain"
+      responses: {
+        key: "200"
+        value: {
+          description: "Successful response from the current HTTP handler."
+          examples: {
+            key: "text/plain"
+            value: "welcome to infra service\n"
+          }
+        }
+      }
+    };
   }
-  
+}
+
+// JSON body accepted by the direct HTTP handler.
+message InfraLinuxRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {example: "{\"action\": \"login\"}"};
+  // Resource name or operation name; see the operation description.
+  string name = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Resource name or operation name; see the operation description."
+    example: "\"example\""
+  }];
+  // Legacy extension payload. Normal HTTP requests send business fields directly in the JSON body; omit this field.
+  map<string, google.protobuf.Any> payload = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Legacy extension payload. Normal HTTP requests send business fields directly in the JSON body; omit this field."
+    example: "{}"
+  }];
+
+  // IP address in textual form.
+  string ip = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "IP address in textual form."
+    example: "\"203.0.113.10\""
+  }];
+  // Host name.
+  string hostname = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Host name."
+    example: "\"web-01\""
+  }];
+  // Action to record; security response action codes are not currently implemented.
+  string action = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Action to record; security response action codes are not currently implemented."
+    example: "\"login\""
+  }];
+  // string action = 5 [name = "cmd", json_name = "cmd"];
+  // string action = 5 [ (google.protobuf.field_name) = "cmd"];
+}
+
+message InfraLinuxResponse {
+  // Legacy response extension; current direct HTTP handlers do not populate this field.
+  google.protobuf.Any data = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Legacy response extension; current direct HTTP handlers do not populate this field."
+    example: "{}"
+  }];
+  // Application status; its meaning depends on the operation.
+  string status = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Application status; its meaning depends on the operation."
+    example: "\"ok\""
+  }];
+  // Error details when the operation fails.
+  string err_msg = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Error details when the operation fails."
+    example: "\"\""
+  }];
+}
+
+message RecordVisitRequest {
+  // Host name from the URL path.
+  string hostname = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {example: "\"web-01\""}];
+  // Recorded action; this request writes a visit record.
+  string action = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {example: "\"login\""}];
+}

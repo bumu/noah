@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package apigw.v1;
 
+import "common/v1/http.proto";
 import "google/api/annotations.proto";
 import "google/api/client.proto";
-import "google/api/field_behavior.proto";
 import "google/protobuf/any.proto";
+import "google/protobuf/empty.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
-import "buf/validate/validate.proto";
 
 option go_package = "noah/gen/go/apigw/v1;systemv1";
 option java_multiple_files = true;
@@ -16,58 +16,168 @@ option java_package = "com.airdb.apigw.v1";
 
 service SensitiveService {
   option (google.api.default_host) = "apigw.airdb.com";
-  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {description: "Senstive Words Service"};
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {description: "Sensitive-word dictionary records."};
 
-  // Sensitive
+  // Create a sensitive-word record.
   rpc SensitiveAPI(SensitiveRequest) returns (SensitiveResponse) {
     option (google.api.http) = {
-      post: "/v1/sensitive/{name=*}"
-      body: "payload"
+      post: "/v1/sensitive/create"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      operation_id: "apigw_SensitiveAPI"
+      summary: "Create a sensitive-word record"
+      description: "Stores category, country_code and content. This endpoint creates a dictionary record; it does not scan text. Success is plain text."
+      produces: "text/plain"
+      responses: {
+        key: "200"
+        value: {
+          description: "Record stored successfully."
+          schema: {
+            json_schema: {type: STRING}
+          }
+          examples: {
+            key: "text/plain"
+            value: "create sensitive"
+          }
+        }
+      }
+    };
+
+    option (google.api.method_signature) = "name";
+  }
+
+  // Get sensitive-word record.
+  rpc GetSensitive(google.protobuf.Empty) returns (noah.common.v1.ObjectResponse) {
+    option (google.api.http) = {
+      get: "/v1/sensitive"
       response_body: "data"
     };
-    option (google.api.method_signature) = "name";
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get sensitive-word record"
+      description: "Always looks up record ID=1. No caller-selectable ID is currently implemented. On repository errors the handler may prefix the response with plain text."
+      produces: "application/json"
+      responses: {
+        key: "200"
+        value: {
+          description: "Successful response from the current HTTP handler."
+          examples: {
+            key: "application/json"
+            value: "{\"ID\": 1, \"CreatedAt\": \"2026-11-21T08:00:00Z\", \"UpdatedAt\": \"2026-11-21T08:00:00Z\", \"DeletedAt\": null, \"Category\": \"spam\", \"CountryCode\": \"SG\", \"Content\": \"example-word\", \"Remark\": \"\"}"
+          }
+        }
+      }
+    };
+  }
+
+  // List sensitive-word records.
+  rpc ListSensitive(google.protobuf.Empty) returns (noah.common.v1.ListResponse) {
+    option (google.api.http) = {
+      get: "/v1/sensitive/list"
+      response_body: "data"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List sensitive-word records"
+      description: "Returns a bare array, fixed limit=10 and offset=0. No query pagination."
+      produces: "application/json"
+      responses: {
+        key: "200"
+        value: {
+          description: "Successful response from the current HTTP handler."
+          examples: {
+            key: "application/json"
+            value: "[{\"ID\": 1, \"CreatedAt\": \"2026-11-21T08:00:00Z\", \"UpdatedAt\": \"2026-11-21T08:00:00Z\", \"DeletedAt\": null, \"Category\": \"spam\", \"CountryCode\": \"SG\", \"Content\": \"example-word\", \"Remark\": \"\"}]"
+          }
+        }
+      }
+    };
   }
 }
 
+// JSON body accepted by the direct HTTP handler.
 message SensitiveRequest {
-  // The uri of the openai.
-  string name = 1 [
-    (google.api.field_behavior) = REQUIRED,
-    (buf.validate.field).string.min_len = 1
-  ];
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {example: "{\"category\": \"spam\", \"country_code\": \"SG\", \"content\": \"example-word\"}"};
+  // Resource name or upstream operation path; see the operation description.
+  string name = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Resource name or operation name; see the operation description."
+    example: "\"example\""
+  }];
 
-  map<string, google.protobuf.Any> payload = 2;
-  string category = 3;
-  string country_code = 4;
-  string content = 5;
+  // Legacy extension payload. Normal HTTP requests send business fields directly in the JSON body; omit this field.
+  map<string, google.protobuf.Any> payload = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Legacy extension payload. Normal HTTP requests send business fields directly in the JSON body; omit this field."
+    example: "{}"
+  }];
+  // Sensitive-word category.
+  string category = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Sensitive-word category."
+    example: "\"spam\""
+  }];
+  // Country or region code.
+  string country_code = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Country or region code."
+    example: "\"SG\""
+  }];
+  // Sensitive word or phrase to store.
+  string content = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Sensitive word or phrase to store."
+    example: "\"example-word\""
+  }];
 }
 
-/* Example for response.
-{
-    "code": "0",
-    "msg": "check success",
-    "remain": "29999",
-    "return_str": "他在传播**内容",
-    "word_list": [{
-        "keyword": "艳情",
-        "category": "色情",
-        "position": "4-5",
-        "level": "高"
-    }]
-}
-*/
+// Legacy scan response contract; CreateSensitive currently returns plain text.
 message SensitiveResponse {
-  google.protobuf.Any data = 4;
-  string code = 5;
-  string msg = 6;
-  string remain = 7;
-  string return_str = 8;
-  repeated SensitiveWord word_list = 9;
+  // Legacy response extension; current direct HTTP handlers do not populate this field.
+  google.protobuf.Any data = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Legacy response extension; current direct HTTP handlers do not populate this field."
+    example: "{}"
+  }];
+  // Legacy scan result code; not returned by the create-record handler.
+  string code = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Legacy scan result code; not returned by the create-record handler."
+    example: "\"0\""
+  }];
+  // Legacy scan result message.
+  string msg = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Legacy scan result message."
+    example: "\"check success\""
+  }];
+  // Legacy remaining quota.
+  string remain = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Legacy remaining quota."
+    example: "\"29999\""
+  }];
+  // Legacy scan result with masked words.
+  string return_str = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Legacy scan result with masked words."
+    example: "\"example **\""
+  }];
+  // Legacy sensitive-word matches; not returned by the create-record handler.
+  repeated SensitiveWord word_list = 9 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Legacy sensitive-word matches; not returned by the create-record handler."
+    example: "[]"
+  }];
 }
 
 message SensitiveWord {
-  string keyword = 1;
-  string category = 2;
-  string position = 3;
-  string level = 4;
+  // Matched sensitive word.
+  string keyword = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Matched sensitive word."
+    example: "\"example-word\""
+  }];
+  // Sensitive-word category.
+  string category = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Sensitive-word category."
+    example: "\"spam\""
+  }];
+  // Matched character range.
+  string position = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Matched character range."
+    example: "\"4-5\""
+  }];
+  // Severity label.
+  string level = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Severity label."
+    example: "\"high\""
+  }];
 }

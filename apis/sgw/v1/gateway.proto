@@ -1,0 +1,107 @@
+syntax = "proto3";
+
+package infra.v1;
+
+import "common/v1/http.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "noah/gen/go/sgw/v1;sgwv1";
+
+// Gateway domain, DNS, certificate and load balancer management.
+service GatewayService {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {description: "Gateway domain, DNS, certificate and load balancer management."};
+
+  // List gateway domain records.
+  rpc ListDomain(google.protobuf.Empty) returns (noah.common.v1.ListResponse) {
+    option (google.api.http) = {
+      get: "/apis/v1/sgw/domain"
+      response_body: "data"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List gateway domain records"
+      description: "All four current SGW list routes invoke ListDomain and return gateway domain records, fixed limit=50 and offset=0. This route does not return a separate domain model."
+      produces: "application/json"
+      responses: {
+        key: "200"
+        value: {
+          description: "Successful response from the current HTTP handler."
+          examples: {
+            key: "application/json"
+            value: "[{\"ID\": 1, \"CreatedAt\": \"2026-11-21T08:00:00Z\", \"UpdatedAt\": \"2026-11-21T08:00:00Z\", \"DeletedAt\": null, \"Domain\": \"example.com\", \"Issuer\": \"Example CA\", \"Expired\": false, \"ExpiredAt\": \"2027-11-21T08:00:00Z\"}]"
+          }
+        }
+      }
+    };
+  }
+
+  // List gateway dns records.
+  rpc ListDns(google.protobuf.Empty) returns (noah.common.v1.ListResponse) {
+    option (google.api.http) = {
+      get: "/apis/v1/sgw/dns"
+      response_body: "data"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List gateway dns records"
+      description: "All four current SGW list routes invoke ListDomain and return gateway domain records, fixed limit=50 and offset=0. This route does not return a separate dns model."
+      produces: "application/json"
+      responses: {
+        key: "200"
+        value: {
+          description: "Successful response from the current HTTP handler."
+          examples: {
+            key: "application/json"
+            value: "[{\"ID\": 1, \"CreatedAt\": \"2026-11-21T08:00:00Z\", \"UpdatedAt\": \"2026-11-21T08:00:00Z\", \"DeletedAt\": null, \"Domain\": \"example.com\", \"Issuer\": \"Example CA\", \"Expired\": false, \"ExpiredAt\": \"2027-11-21T08:00:00Z\"}]"
+          }
+        }
+      }
+    };
+  }
+
+  // List gateway cert records.
+  rpc ListCert(google.protobuf.Empty) returns (noah.common.v1.ListResponse) {
+    option (google.api.http) = {
+      get: "/apis/v1/sgw/cert"
+      response_body: "data"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List gateway cert records"
+      description: "All four current SGW list routes invoke ListDomain and return gateway domain records, fixed limit=50 and offset=0. This route does not return a separate cert model."
+      produces: "application/json"
+      responses: {
+        key: "200"
+        value: {
+          description: "Successful response from the current HTTP handler."
+          examples: {
+            key: "application/json"
+            value: "[{\"ID\": 1, \"CreatedAt\": \"2026-11-21T08:00:00Z\", \"UpdatedAt\": \"2026-11-21T08:00:00Z\", \"DeletedAt\": null, \"Domain\": \"example.com\", \"Issuer\": \"Example CA\", \"Expired\": false, \"ExpiredAt\": \"2027-11-21T08:00:00Z\"}]"
+          }
+        }
+      }
+    };
+  }
+
+  // List gateway alb records.
+  rpc ListAlb(google.protobuf.Empty) returns (noah.common.v1.ListResponse) {
+    option (google.api.http) = {
+      get: "/apis/v1/sgw/alb"
+      response_body: "data"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List gateway alb records"
+      description: "All four current SGW list routes invoke ListDomain and return gateway domain records, fixed limit=50 and offset=0. This route does not return a separate alb model."
+      produces: "application/json"
+      responses: {
+        key: "200"
+        value: {
+          description: "Successful response from the current HTTP handler."
+          examples: {
+            key: "application/json"
+            value: "[{\"ID\": 1, \"CreatedAt\": \"2026-11-21T08:00:00Z\", \"UpdatedAt\": \"2026-11-21T08:00:00Z\", \"DeletedAt\": null, \"Domain\": \"example.com\", \"Issuer\": \"Example CA\", \"Expired\": false, \"ExpiredAt\": \"2027-11-21T08:00:00Z\"}]"
+          }
+        }
+      }
+    };
+  }
+}

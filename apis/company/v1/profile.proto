@@ -3,12 +3,14 @@ syntax = "proto3";
 // This package represents all information needed to represent a company profile.
 package company.v1;
 
+import "buf/validate/validate.proto";
+import "common/v1/http.proto";
 import "google/api/annotations.proto";
 import "google/api/client.proto";
 import "google/api/field_behavior.proto";
 import "google/protobuf/any.proto";
+import "google/protobuf/empty.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
-import "buf/validate/validate.proto";
 
 option go_package = "noah/gen/go/company/v1;systemv1";
 option java_multiple_files = true;
@@ -17,35 +19,105 @@ option java_package = "com.airdb.apigw.v1";
 
 service CompanyProfile {
   option (google.api.default_host) = "company.apis.airdb.com";
-  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {description: "OpenAI Service -- which used to interacitve with openai."};
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {description: "Company profile management."};
 
-  // CompanyProfile
+  // Create a company profile.
   rpc CompanyProfile(CreateCompanyProfileRequest) returns (CreateCompanyProfileResponse) {
     option (google.api.http) = {
-      post: "/v1/company/{name=*}"
-      body: "payload"
+      post: "/apis/v1/company/create"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      operation_id: "company_CompanyProfile"
+      summary: "Create a company profile"
+      description: "Creates a profile from a JSON object. name is required. Success currently returns HTTP 200 with an empty body. Validation and storage failures return JSON with status=400 (the HTTP status may still be 200)."
+      responses: {
+        key: "200"
+        value: {description: "Empty body on success."}
+      }
+    };
+
+    option (google.api.method_signature) = "name";
+  }
+
+  // List company profiles.
+  rpc ListProfiles(google.protobuf.Empty) returns (noah.common.v1.ListResponse) {
+    option (google.api.http) = {
+      get: "/apis/v1/company"
       response_body: "data"
     };
-    option (google.api.method_signature) = "name";
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List company profiles"
+      description: "Returns a bare array, fixed limit=50 and offset=0. Business fields use snake_case JSON tags; GORM metadata retains ID/CreatedAt/UpdatedAt/DeletedAt. Both trailing-slash and slashless URLs are supported by the router."
+      produces: "application/json"
+      responses: {
+        key: "200"
+        value: {
+          description: "Successful response from the current HTTP handler."
+          examples: {
+            key: "application/json"
+            value: "[{\"ID\": 1, \"CreatedAt\": \"2026-11-21T08:00:00Z\", \"UpdatedAt\": \"2026-11-21T08:00:00Z\", \"DeletedAt\": null, \"name\": \"Example Pte Ltd\", \"uen\": \"202400001A\", \"address\": \"1 Example Road, Singapore\", \"website\": \"https://example.com\", \"phone\": \"+6561234567\", \"status\": 1}]"
+          }
+        }
+      }
+    };
   }
 }
 
+// JSON body accepted by the direct HTTP handler.
 message CreateCompanyProfileRequest {
-  // The uri of the openai.
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {example: "{\"name\": \"Example Pte Ltd\", \"uen\": \"202400001A\", \"address\": \"1 Example Road, Singapore\", \"website\": \"https://example.com\", \"phone\": \"+6561234567\", \"status\": 1}"};
+  // Resource name or upstream operation path; see the operation description.
   string name = 1 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "Resource name or operation name; see the operation description."
+      example: "\"Example Pte Ltd\""
+    },
     (google.api.field_behavior) = REQUIRED,
     (buf.validate.field).string.min_len = 1
   ];
 
-  map<string, google.protobuf.Any> payload = 2;
-  string uen = 3;
-  string address = 4;
-  string website = 5;
-  string phone = 6;
-  int32 status = 8;
+  // Legacy extension payload. Normal HTTP requests send business fields directly in the JSON body; omit this field.
+  map<string, google.protobuf.Any> payload = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Legacy extension payload. Normal HTTP requests send business fields directly in the JSON body; omit this field."
+    example: "{}"
+  }];
+  // Singapore Unique Entity Number.
+  string uen = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Singapore Unique Entity Number."
+    example: "\"202400001A\""
+  }];
+  // Registered company address.
+  string address = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Registered company address."
+    example: "\"1 Example Road, Singapore\""
+  }];
+  // Company website URL.
+  string website = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Company website URL."
+    example: "\"https://example.com\""
+  }];
+  // Contact phone number.
+  string phone = 6 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Contact phone number."
+    example: "\"+6561234567\""
+  }];
+  // Application status; its meaning depends on the operation.
+  int32 status = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Application status; its meaning depends on the operation."
+    example: "0"
+  }];
 }
 
 message CreateCompanyProfileResponse {
-  google.protobuf.Any data = 4;
-  int32 status = 1;
+  // Legacy response extension; current direct HTTP handlers do not populate this field.
+  google.protobuf.Any data = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Legacy response extension; current direct HTTP handlers do not populate this field."
+    example: "{}"
+  }];
+  // Application status; its meaning depends on the operation.
+  int32 status = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Application status; its meaning depends on the operation."
+    example: "0"
+  }];
 }

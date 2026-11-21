@@ -1,0 +1,21 @@
+syntax = "proto3";
+package noah.common.v1;
+
+import "google/protobuf/struct.proto";
+
+option go_package = "noah/gen/go/common/v1;commonv1";
+// A direct HTTP text response. The data field is unwrapped by response_body.
+message TextResponse {
+  // Exact text returned by the HTTP handler.
+  string data = 1;
+}
+// A direct HTTP JSON object; see each operation's response example for field names.
+message ObjectResponse {
+  // Direct handlers serialize their own structs, including original JSON field casing.
+  google.protobuf.Struct data = 1;
+}
+// A direct HTTP JSON array, without a wrapper or pagination envelope.
+message ListResponse {
+  // Records as emitted by the current direct handler.
+  repeated google.protobuf.Struct data = 1;
+}

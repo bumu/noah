@@ -2,12 +2,13 @@ syntax = "proto3";
 
 package apigw.v1;
 
+import "buf/validate/validate.proto";
 import "google/api/annotations.proto";
 import "google/api/client.proto";
 import "google/api/field_behavior.proto";
 import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
-import "buf/validate/validate.proto";
 
 option go_package = "noah/gen/go/apigw/v1;systemv1";
 option java_multiple_files = true;
@@ -16,29 +17,64 @@ option java_package = "com.airdb.apigw.v1";
 
 service OpenAIService {
   option (google.api.default_host) = "apigw.airdb.com";
-  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {description: "Azure OpenAI Service -- which used to interacitve with openai."};
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {description: "Proxy an OpenAI request"};
 
-  // OpenAIProxy
+  // Proxy an OpenAI request.
   rpc OpenAIProxy(OpenAIProxyRequest) returns (OpenAIProxyResponse) {
     option (google.api.http) = {
-      post: "/v1/openai/{name=*}"
+      post: "/v1/openai/{name=**}"
       body: "payload"
       response_body: "data"
     };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      operation_id: "apigw_OpenAIProxy"
+      summary: "Proxy an OpenAI request"
+      description: "Forwards the JSON body to the upstream path. Use name=v1/chat/completions. Send Authorization: Bearer <token>. The handler forwards the upstream body; it does not currently preserve upstream status codes or support true streaming. Example JSON body: {\"model\":\"your-model\",\"messages\":[{\"role\":\"user\",\"content\":\"Hello\"}],\"stream\":false}."
+      parameters: {
+        headers: {
+          name: "Authorization"
+          description: "Bearer token accepted by the gateway or upstream."
+          type: STRING
+          required: true
+        }
+      }
+      responses: {
+        key: "200"
+        value: {
+          description: "Upstream JSON response body."
+          schema: {
+            json_schema: {type: OBJECT}
+          }
+        }
+      }
+    };
+
     option (google.api.method_signature) = "name";
   }
 }
 
 message OpenAIProxyRequest {
-  // The uri of the openai.
+  // Resource name or upstream operation path; see the operation description.
   string name = 1 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "Resource name or operation name; see the operation description."
+      example: "\"v1/chat/completions\""
+    },
     (google.api.field_behavior) = REQUIRED,
     (buf.validate.field).string.min_len = 1
   ];
 
-  map<string, google.protobuf.Any> payload = 2;
+  // JSON request forwarded verbatim to the upstream; no protobuf Any @type wrapper is required.
+  google.protobuf.Struct payload = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "JSON request forwarded verbatim to the upstream; no protobuf Any @type wrapper is required."
+    example: "{\"model\": \"your-deployment-or-model\", \"messages\": [{\"role\": \"user\", \"content\": \"Hello\"}], \"stream\": false}"
+  }];
 }
 
 message OpenAIProxyResponse {
-  google.protobuf.Any data = 4;
+  // Legacy response extension; current direct HTTP handlers do not populate this field.
+  google.protobuf.Any data = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "Legacy response extension; current direct HTTP handlers do not populate this field."
+    example: "{}"
+  }];
 }

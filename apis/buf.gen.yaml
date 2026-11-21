@@ -10,7 +10,7 @@ managed:
       module: buf.build/grpc-ecosystem/grpc-gateway
   override:
     - file_option: go_package_prefix
-      value: arkport/gen/go
+      value: noah/gen/go
 plugins:
   - local: protoc-gen-go
     out: ../gen/go
@@ -35,6 +35,7 @@ plugins:
     opt:
       - allow_repeated_fields_in_body=true
       - output_format=yaml
+      - json_names_for_fields=false
       - allow_merge=true,merge_file_name=apis
       - Meinride/iam/v1/annotations.proto=go.einride.tech/iam/proto/gen/einride/iam/v1
     strategy: all
